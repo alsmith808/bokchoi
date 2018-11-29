@@ -4,7 +4,7 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from bokchoi.models import User, Post
+from bokchoi.models import User, Post, Ingredient, Review, recs
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -86,8 +86,8 @@ def account():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
-          picture_file = save_picture(form.picture.data)
-          current_user.image_file = picture_file
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
@@ -101,15 +101,19 @@ def account():
 
 
 
+
 @app.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
+        ingredient=Ingredient(name=form.ingredient.data)
         db.session.add(post)
+        db.session.add(ingredient)
+        ingredient.items.append(post)
         db.session.commit()
-        flash('Your post has been created!', 'success')
+        flash('Your recipe has been created!', 'success')
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Recipe',
                            form=form, legend='New Recipe')
@@ -134,13 +138,15 @@ def update_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         post.title = form.title.data
-        post.content = form.content.data
+        post.description = form.description.data
+        post.howto = form.howto.data
         db.session.commit()
         flash('Your recipe has been updated!', 'success')
         return redirect(url_for('post', post_id=post.id))
     elif request.method == 'GET':
         form.title.data = post.title
-        form.content.data = post.content
+        form.description.data = post.description
+        form.howto.data = post.howto
     return render_template('create_post.html', title='Update Recipe',
                            form=form, legend='Update Recipe')
 
@@ -157,6 +163,7 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your recipe has been deleted!', 'success')
     return redirect(url_for('home'))
+
 
 
 

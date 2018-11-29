@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from bokchoi.models import User
 
@@ -64,5 +64,10 @@ class UpdateAccountForm(FlaskForm):
 
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
-    content = TextAreaField('Content', validators=[DataRequired()])
+    description = StringField('Description', validators=[DataRequired()])
+    ethnicity = SelectField('Ethnicity', choices=[('British', 'British'), ('French', 'French'), ('Medit', 'Medit'), ('Indian', 'Indian'), ('Middle East', 'Middle East'), ('Asian', 'Asian'), ('African', 'African'), ('Mexican', 'Mexican'), ('Other', 'Other'),])
+    course = SelectField('Course', choices=[('Starter', 'Starter'), ('Main', 'Main'), ('Desert', 'Desert')])
+    cook_time = IntegerField('Cooking Time', validators=[DataRequired()])
+    ingredient = StringField('Ingredient', validators=[DataRequired()])
+    howto = TextAreaField('Howto', validators=[DataRequired()])
     submit = SubmitField('Post')
