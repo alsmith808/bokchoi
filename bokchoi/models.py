@@ -55,7 +55,7 @@ class Ingredient(db.Model):
     name = db.Column(db.String(30), nullable=False)
 
     def __repr__(self):
-        return f"Ingredient('{self.name}', '{self.unit}', '{self.qty}')"
+        return f"Ingredient('{self.name}')"
 
 
 

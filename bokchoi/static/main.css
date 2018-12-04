@@ -15,7 +15,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .bg-bokchoi {
   background-color: #37d26b;
-  /* background-color: #7ac657; */
+  opacity: 0.8;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -23,7 +23,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color: brown;
+  color:#425542;
 }
 
 .site-header .navbar-nav .nav-link.active {
@@ -76,10 +76,10 @@ a.article-title:hover {
 }
 
 .account-img {
-  height: 125px;
-  width: 125px;
-  margin-right: 20px;
-  margin-bottom: 16px;
+  height: 6rem;
+  width: 6rem;
+  margin-right: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .account-heading {
@@ -114,6 +114,15 @@ form {
   text-align: center;
   -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
   box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
+}
+
+ul#ingredient{
+  padding: 0;
+}
+
+ul#ingredient li {
+  list-style-type: none;
+  border-bottom: 2px solid #BCBCBC;
 }
 
 label {

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, SelectField, IntegerField, FormField, FieldList, HiddenField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from bokchoi.models import User
 
@@ -62,12 +62,19 @@ class UpdateAccountForm(FlaskForm):
 
 
 
+
+class ListForm(FlaskForm):
+    ing = StringField('Ingredient')
+
+
+
+
 class PostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = StringField('Description', validators=[DataRequired()])
-    ethnicity = SelectField('Ethnicity', choices=[('British', 'British'), ('French', 'French'), ('Medit', 'Medit'), ('Indian', 'Indian'), ('Middle East', 'Middle East'), ('Asian', 'Asian'), ('African', 'African'), ('Mexican', 'Mexican'), ('Other', 'Other'),])
+    ethnicity = SelectField('Ethnicity', choices=[('British', 'British'), ('French', 'French'), ('Medit', 'Medit'), ('Indian', 'Indian'), ('Middle East', 'Middle East'), ('Asian', 'Asian'), ('African', 'African'), ('Mexican', 'Mexican'), ('Other', 'Other')])
     course = SelectField('Course', choices=[('Starter', 'Starter'), ('Main', 'Main'), ('Desert', 'Desert')])
     cook_time = IntegerField('Cooking Time', validators=[DataRequired()])
-    ingredient = StringField('Ingredient', validators=[DataRequired()])
+    ingredient = FieldList(StringField(ListForm), min_entries=8, max_entries=10)
     howto = TextAreaField('Howto', validators=[DataRequired()])
     submit = SubmitField('Post')

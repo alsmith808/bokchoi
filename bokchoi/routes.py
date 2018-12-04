@@ -70,12 +70,10 @@ def save_picture(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
-
     return picture_fn
 
 
@@ -108,10 +106,15 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
-        ingredient=Ingredient(name=form.ingredient.data)
         db.session.add(post)
-        db.session.add(ingredient)
-        ingredient.items.append(post)
+        ingredients = form.ingredient.data
+        for ing in ingredients:
+            ingredient = Ingredient(name=ing)
+            db.session.add(ingredient)
+            ingredient.items.append(post)
+        # ingredient=Ingredient(name=form.ingredient.data)
+        # db.session.add(ingredient)
+        # ingredient.items.append(post)
         db.session.commit()
         flash('Your recipe has been created!', 'success')
         return redirect(url_for('home'))
@@ -175,3 +178,42 @@ def user_posts(username):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
     return render_template('user_posts.html', posts=posts, user=user)
+
+
+# @app.route("/course/<string:course>")
+# def course(course):
+#     page = request.args.get('page', 1, type=int)
+#     posts = Post.query.filter_by(course=course)\
+#         .order_by(Post.date_posted.desc())\
+#         .paginate(page=page, per_page=5)
+#     return render_template('home.html', posts=posts, title='course')
+
+
+
+@app.route('/starters')
+def starters():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(course='Starter')\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('home.html', posts=posts, title='starters')
+
+
+
+@app.route('/main')
+def main():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(course='Main')\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('home.html', posts=posts, title='main courses')
+
+
+
+@app.route('/desert')
+def desert():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(course='Desert')\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('home.html', posts=posts, title='deserts')

@@ -36,7 +36,7 @@
         </div>
       </label>
       <label>
-        <p class="label-txt">Ingredient</p>
+        <p class="label-txt">Ingredients</p>
         {% if form.ingredient.errors %}
           {{ form.ingredient(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -45,11 +45,8 @@
             {% endfor %}
           </div>
         {% else %}
-          {{ form.ingredient(class="method") }}
+          {{ form.ingredient(class="") }}          
         {% endif %}
-        <div class="line-box">
-          <div class="line"></div>
-        </div>
       </label>
       <label>
         <p class="label-txt">Cooking Method</p>

@@ -1,10 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
+  <section class="account-section">
     <div class="media">
-      <img class="rounded-circle account-img" src="{{ image_file }}">
-      <div class="media-body">
-        <h2 class="account-heading">{{ current_user.username }}</h2>
-        <p class="text-secondary">{{ current_user.email }}</p>
+      <div class="container d-flex justify-content-center">
+        <img class="rounded-circle account-img" src="{{ image_file }}">
+        <div class="media-body">
+          <h2 class="account-heading">{{ current_user.username }}</h2>
+          <p class="text-secondary">{{ current_user.email }}</p>
+        </div>
       </div>
     </div>
     <form method="POST" enctype="multipart/form-data">
@@ -55,4 +58,5 @@
         Update
       </button>
     </form>
+  </section>
 {% endblock content %}

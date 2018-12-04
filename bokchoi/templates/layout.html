@@ -4,7 +4,6 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- <link rel="shortcut icon" href="bokchoi/fav.ico"> -->
     <link rel="shortcut icon" href="fav.ico" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
@@ -28,7 +27,14 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-              <a class="nav-item nav-link" href="{{ url_for('about') }}">About</a>
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ url_for('starters') }}">Starter</a>
+                <a class="dropdown-item" href="{{ url_for('main') }}">Main Course</a>
+                <a class="dropdown-item" href="{{ url_for('desert') }}">Desert</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
