@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-  <form method="POST">
+  <form method="POST" class="bok-form" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
       <legend class="border-bottom mb-4 text-secondary">{{ legend }}</legend>
       <label>
@@ -45,11 +45,43 @@
             {% endfor %}
           </div>
         {% else %}
-          {{ form.ingredient(class="") }}          
+          {{ form.ingredient(class="") }}
         {% endif %}
       </label>
+      <div class="row allergies pb-3">
+        <div class="column-md-6">
+          <div class="form-check">
+            {{ form.vegan.label(class="form-check-label") }}
+            {{ form.vegan(class="form-check-input") }}
+          </div>
+        </div>
+        <div class="column-md-6">
+          <div class="form-check">
+            {{ form.vegetarian.label(class="form-check-label") }}
+            {{ form.vegetarian(class="form-check-input") }}
+          </div>
+        </div>
+        <div class="column-md-6">
+          <div class="form-check">
+            {{ form.nuts.label(class="form-check-label") }}
+            {{ form.nuts(class="form-check-input") }}
+          </div>
+        </div>
+        <div class="column-md-6">
+          <div class="form-check">
+            {{ form.shellfish.label(class="form-check-label") }}
+            {{ form.shellfish(class="form-check-input") }}
+          </div>
+        </div>
+        <div class="column-md-6">
+          <div class="form-check">
+            {{ form.meat.label(class="form-check-label") }}
+            {{ form.meat(class="form-check-input") }}
+          </div>
+        </div>
+      </div>
       <label>
-        <p class="label-txt">Cooking Method</p>
+        <p class="label-txt mt-3 mb-3">Cooking Method</p>
         {% if form.howto.errors %}
           {{ form.howto(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -81,7 +113,7 @@
         </div>
       </label>
       <label>
-        <p class="label-txt">Ethnicity</p>
+        <p>Ethnicity</p>
         {% if form.ethnicity.errors %}
           {{ form.ethnicity(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -94,7 +126,7 @@
         {% endif %}
       </label>
       <label>
-        <p class="label-txt">Course</p>
+        <p>Course</p>
         {% if form.course.errors %}
           {{ form.course(class="form-control form-control-lg is-invalid") }}
           <div class="invalid-feedback">
@@ -106,7 +138,28 @@
           {{ form.course(class="form-control form-control-lg is-invalid") }}
         {% endif %}
       </label>
-      <button type="submit">
+      <div class="recipe-account ">
+        {% if form.picture.errors %}
+          {{ form.picture(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.picture.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          <img src="{{ image_file }}" class="img-fluid" alt="Responsive image">
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.picture.label() }}
+        {{ form.picture(class="form-control-file") }}
+        {% if form.picture.errors %}
+          {% for error in form.picture.errors %}
+            <span class="text-danger">{{ error }}</span></br>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <button type="form.submit">
         Post
       </button>
   </form>

@@ -4,25 +4,36 @@
   <div class="row">
     <div class="col-md-8">
     {% for post in posts.items %}
-      <article class="media content-section">
-        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' +     post.author.image_file) }}">
-        <div class="media-body op">
-          <div class="article-metadata">
-            <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">
-              {{ post.author.username }}</a>
-            <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+      <article class="content-section">
+        <div class="row">
+          <div class="col-md-12">
+            <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' +     post.author.image_file) }}">
+            <div class="article-metadata">
+              <a class="mr-2" href="{{ url_for('user_posts', username=post.author.username) }}">
+                {{ post.author.username }}</a>
+              <small class="text-muted">{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+            </div>
           </div>
-          <h2><a class="article-title"
-            href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
-          </h2>
-          <p class="article-content">{{ post.ethnicity }}</p>
-          <p class="article-content">{{ post.course }} Course</p
-          <p class="article-content">{{ post.cook_time }} Minutes</p
-          <p class="article-content">{{ post.howto }}</p>
-          <i class="material-icons">favorite</i>
-          <i class="material-icons">thumb_up</i>
-          <i class="material-icons">thumb_down</i>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="media-body op">
+              <h4><a class="article-title"
+                href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a>
+              </h4>
+              <a href="{{ url_for('post', post_id=post.id) }}">
+                <img src="{{ url_for('static', filename='post_pics/' + post.recipe_img) }}" class="img-fluid" alt="recipe image">
+              </a>
+
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <i class="material-icons">favorite</i><span>12</span>
+          </div>
+        </div>
+
       </article>
     {% endfor %}
     {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}

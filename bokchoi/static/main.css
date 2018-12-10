@@ -1,5 +1,4 @@
 body {
-  /* background: #fafafa; */
   background: url('img/bg3.jpeg')no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -11,6 +10,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: #444444;
+}
+
+.user-recipe{
+  color: #d9e3e9;
+  font-size: 1.5rem;
+  font-weight: 400;
 }
 
 .bg-bokchoi {
@@ -52,6 +57,26 @@ a.article-title:hover {
   white-space: pre-line;
 }
 
+.desc {
+  font-weight: 600;
+  color: #6b686a;
+}
+
+.bok-list {
+  font-size: 0.8rem;
+  color: #6b686a;
+  font-weight: 400;
+}
+
+.lh-sp-80 {
+  line-height: 80%;
+}
+
+
+.food-items {
+  padding-left: 4px;
+}
+
 .article-img {
   height: 65px;
   width: 65px;
@@ -89,14 +114,12 @@ a.article-title:hover {
 /* green form */
 
 .login-section  {
-  /* background: #e8f2db; */
   margin-top: -2rem;
   height: 100vh;
   opacity: 0.9;
 }
 
 .register-section {
-  /* background: #C5E1A5; */
   margin-top: -2rem;
   opacity: 0.9;
 }
@@ -105,7 +128,7 @@ a.article-title:hover {
   margin-top: 3rem;
 }
 
-form {
+.bok-form {
   width: 60%;
   margin: 60px auto;
   background: #efefef;

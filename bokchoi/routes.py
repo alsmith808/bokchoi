@@ -6,7 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Review, recs
 from flask_login import login_user, current_user, logout_user, login_required
-
+from bokchoi.helpers import save_picture, save_recpic
 
 
 
@@ -65,18 +65,6 @@ def logout():
 
 
 
-def save_picture(form_picture):
-    random_hex = secrets.token_hex(8)
-    _, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
-    output_size = (125, 125)
-    i = Image.open(form_picture)
-    i.thumbnail(output_size)
-    i.save(picture_path)
-    return picture_fn
-
-
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
@@ -105,21 +93,21 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
+        # if form.picture.data:
+            # picture_file = save_recpic(form.picture.data)
+        post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
         db.session.add(post)
         ingredients = form.ingredient.data
         for ing in ingredients:
             ingredient = Ingredient(name=ing)
             db.session.add(ingredient)
             ingredient.items.append(post)
-        # ingredient=Ingredient(name=form.ingredient.data)
-        # db.session.add(ingredient)
-        # ingredient.items.append(post)
         db.session.commit()
         flash('Your recipe has been created!', 'success')
         return redirect(url_for('home'))
+    image_file = url_for('static', filename='post_pics/recipe_default.jpg')
     return render_template('create_post.html', title='New Recipe',
-                           form=form, legend='New Recipe')
+                           form=form, legend='New Recipe', image_file=image_file)
 
 
 
@@ -140,9 +128,22 @@ def update_post(post_id):
         abort(403)
     form = PostForm()
     if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_recpic(form.picture.data)
+            post.recipe_img = picture_file
         post.title = form.title.data
         post.description = form.description.data
         post.howto = form.howto.data
+        post.ethnicity = form.ethnicity.data
+        post.course = form.course.data
+        post.vegetarian = form.vegetarian.data
+        post.vegan = form.vegan.data
+        post.nuts = form.nuts.data
+        post.shellfish = form.shellfish.data
+        post.meat = form.meat.data
+        post.cook_time = form.cook_time.data
+        for i in range (len(post.ingredients)):
+            post.ingredients[i].name = form.ingredient[i].data
         db.session.commit()
         flash('Your recipe has been updated!', 'success')
         return redirect(url_for('post', post_id=post.id))
@@ -150,8 +151,19 @@ def update_post(post_id):
         form.title.data = post.title
         form.description.data = post.description
         form.howto.data = post.howto
+        form.ethnicity.data = post.ethnicity
+        form.course.data = post.course
+        form.vegetarian.data = post.vegetarian
+        form.vegan.data = post.vegan
+        form.nuts.data = post.nuts
+        form.shellfish.data = post.shellfish
+        form.meat.data = post.meat
+        form.cook_time.data = post.cook_time
+        for i in range (len(form.ingredient)):
+            form.ingredient[i].data = post.ingredients[i].name
+    image_file = url_for('static', filename='post_pics/'+post.recipe_img)
     return render_template('create_post.html', title='Update Recipe',
-                           form=form, legend='Update Recipe')
+                           form=form, legend='Update Recipe', image_file=image_file)
 
 
 
@@ -217,3 +229,13 @@ def desert():
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts, title='deserts')
+
+
+
+@app.route('/vegan')
+def vegan():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(vegan=True)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    return render_template('home.html', posts=posts, title='vegan')
