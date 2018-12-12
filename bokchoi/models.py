@@ -16,6 +16,13 @@ recs = db.Table('recipes',
 
 
 
+rated = db.Table('ratings',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+    )
+
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(12), unique=True, nullable=False)
@@ -45,24 +52,17 @@ class Post(db.Model):
     description = db.Column(db.Text, nullable=False)
     howto = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    views = db.relationship('Views', backref='viewer', lazy=True)
     ingredients = db.relationship('Ingredient', secondary=recs,
                                   backref=db.backref('items', lazy=True))
-    views = db.relationship('Views', backref='viewer', lazy=True)
-    # reviews = db.relationship('Review', backref='ratings', lazy=True)
+    thumbed = db.relationship('User', secondary=rated,
+                                  backref=db.backref('verdict', lazy=True))
+
 
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.howto}', '{self.date_posted}')"
 
-
-
-class Views(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    view_total = db.Column(db.Integer, default=0)
-
-    def __repr__(self):
-        return f"Total views is('{self.name}')"
 
 
 
@@ -75,13 +75,21 @@ class Ingredient(db.Model):
 
 
 
+class Views(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    view_total = db.Column(db.Integer)
+
+    def __repr__(self):
+        return f"Total views is('{self.view_total}')"
+
+
+
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    views = db.Column(db.Integer, nullable=False)
-    likes = db.Column(db.Integer, nullable=False)
-    dislikes = db.Column(db.Integer, nullable=False)
+    like = db.Column(db.Boolean, default=False)
 
 
     def __repr__(self):
-        return f"Review('{self.views}', '{self.likes}', '{self.dislikes}')"
+        return f"Review('{self.recipe_id}', '{self.like}')"

@@ -4,7 +4,7 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from bokchoi.models import User, Post, Ingredient, Review, recs
+from bokchoi.models import User, Post, Ingredient, Review, Views, recs, rated
 from flask_login import login_user, current_user, logout_user, login_required
 from bokchoi.helpers import save_picture, save_recpic
 
@@ -58,6 +58,7 @@ def login():
 
 
 
+
 @app.route("/logout")
 def logout():
   logout_user()
@@ -93,10 +94,11 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        # if form.picture.data:
-            # picture_file = save_recpic(form.picture.data)
         post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
+        view = Views(viewer=post, view_total=0)
         db.session.add(post)
+        db.session.commit()
+        db.session.add(view)
         ingredients = form.ingredient.data
         for ing in ingredients:
             ingredient = Ingredient(name=ing)
@@ -111,11 +113,32 @@ def new_post():
 
 
 
+def upvote():
+    print('you clicked me')
+
+    
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post)
+    viewed = Views.query.get_or_404(post_id)
+    total_views = viewed.view_total
+    total_views = total_views + 1
+    viewed.view_total = total_views
+    db.session.add(viewed)
+    db.session.commit()
+    upvote()
+    return render_template('post.html', title=post.title, post=post, total_views=total_views)
+
+
+
+# @app.route("/post/<int:post_id>/like", methods=['GET', 'POST'])
+# @login_required
+# def like(post_id):
+#     post = Post.query.get_or_404(post_id)
+#     print('you clicked like')
+#     return render_template('post.html', title=post.title, post=post)
+
 
 
 
@@ -162,7 +185,7 @@ def update_post(post_id):
         for i in range (len(form.ingredient)):
             form.ingredient[i].data = post.ingredients[i].name
     image_file = url_for('static', filename='post_pics/'+post.recipe_img)
-    return render_template('create_post.html', title='Update Recipe',
+    return render_template('update_post.html', title='Update Recipe',
                            form=form, legend='Update Recipe', image_file=image_file)
 
 

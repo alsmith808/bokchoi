@@ -4,7 +4,7 @@ from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort
 from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from bokchoi.models import User, Post, Ingredient, Review, recs
+from bokchoi.models import User, Post, Ingredient, Review, Views, recs, rated
 from flask_login import login_user, current_user, logout_user, login_required
 
 
