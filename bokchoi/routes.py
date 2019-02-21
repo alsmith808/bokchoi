@@ -1,10 +1,10 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request, abort
+from flask import render_template, url_for, flash, redirect, request, abort, jsonify
 from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
-from bokchoi.models import User, Post, Ingredient, Review, Views, recs, rated
+from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
 from bokchoi.helpers import save_picture, save_recpic
 
@@ -38,6 +38,7 @@ def register():
         flash('Your account has been created!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 
 
@@ -79,7 +80,7 @@ def account():
         current_user.email = form.email.data
         db.session.commit()
         flash('Your account has been updated', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('home'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
@@ -95,7 +96,8 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
-        view = Views(viewer=post, view_total=0)
+        # view = Views(viewed=post, view_total=0)
+        view = Views(recipe=post, view_total=0)
         db.session.add(post)
         db.session.commit()
         db.session.add(view)
@@ -113,10 +115,7 @@ def new_post():
 
 
 
-def upvote():
-    print('you clicked me')
 
-    
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
@@ -126,18 +125,28 @@ def post(post_id):
     total_views = total_views + 1
     viewed.view_total = total_views
     db.session.add(viewed)
+    likes = db.session.query(post_likes)
+    # likesc = likes.filter_by(liked_id==post.id).count()
+    print(likes)
+    # likes = Post.query.filter_by(vegan=True)
     db.session.commit()
-    upvote()
     return render_template('post.html', title=post.title, post=post, total_views=total_views)
 
 
 
-# @app.route("/post/<int:post_id>/like", methods=['GET', 'POST'])
-# @login_required
-# def like(post_id):
-#     post = Post.query.get_or_404(post_id)
-#     print('you clicked like')
-#     return render_template('post.html', title=post.title, post=post)
+# like route
+@app.route('/like/<int:post_id>')
+@login_required
+def like(post_id):
+    post = Post.query.get_or_404(post_id)
+    # if user == current_user:
+    #     flash('You cannot like your own recipe!')
+    #     return redirect(url_for('post', title=post.title, post=post))
+    # add this post to current_users likes
+    current_user.like(post)
+    db.session.commit()
+    flash('You liked this recipe')
+    return redirect(url_for('post', post_id=post.id))
 
 
 

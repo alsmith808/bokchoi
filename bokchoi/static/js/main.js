@@ -12,4 +12,25 @@ $(document).ready(function(){
     };
   });
 
+
+
+
+  // $('a#upvote').bind('click', function() {
+  //   // alert('like clicked');
+  //   $.getJSON('/like',
+  //     function(data) {
+  //       //do nothing
+  //     });
+  //   return false;
+  // });
+
+
 });
+
+// document.getElementById('upvote').addEventListener(
+//   'click', loadText);
+
+
+function loadText(){
+  alert('Button clicked');
+}

@@ -1,6 +1,7 @@
 from datetime import datetime
 from bokchoi import db, login_manager
 from flask_login import UserMixin
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 @login_manager.user_loader
@@ -8,17 +9,18 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+""" M2M Assoc table between Post and Ingredient  """
 
-recs = db.Table('recipes',
+post_ing = db.Table('recipes',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
     db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredient.id'))
     )
 
 
-
-rated = db.Table('ratings',
-    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+""" M2M Assoc table between User and Post  """
+post_likes = db.Table('post_likes',
+    db.Column('liker_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('liked_id', db.Integer, db.ForeignKey('post.id'))
     )
 
 
@@ -30,9 +32,25 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(20), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
+    likes = db.relationship('Post', secondary=post_likes,
+                            backref=db.backref('likes', lazy='dynamic'))
+
+    def like(self, post):
+        if not self.already_likes(post):
+            self.likes.append(post)
+
+    def unlike(self, post):
+        if self.already_likes(post):
+            self.likes.remove(post)
+
+    def already_likes(self, post):
+        return post in self.likes
+        # return self.likes.filter(
+        #     post_likes.c.liked_id == post.id).count() > 0
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
 
 
 
@@ -52,16 +70,17 @@ class Post(db.Model):
     description = db.Column(db.Text, nullable=False)
     howto = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    views = db.relationship('Views', backref='viewer', lazy=True)
-    ingredients = db.relationship('Ingredient', secondary=recs,
+    viewed = db.relationship('Views', backref='recipe', lazy=True, uselist=False)
+    ingredients = db.relationship('Ingredient', secondary=post_ing,
                                   backref=db.backref('items', lazy=True))
-    thumbed = db.relationship('User', secondary=rated,
-                                  backref=db.backref('verdict', lazy=True))
+    likers = db.relationship('User', secondary=post_likes,
+                            backref=db.backref('likers', lazy=True))
 
 
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.howto}', '{self.date_posted}')"
+
 
 
 
@@ -75,21 +94,10 @@ class Ingredient(db.Model):
 
 
 
+
 class Views(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     view_total = db.Column(db.Integer)
 
     def __repr__(self):
         return f"Total views is('{self.view_total}')"
-
-
-
-class Review(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
-    like = db.Column(db.Boolean, default=False)
-
-
-    def __repr__(self):
-        return f"Review('{self.recipe_id}', '{self.like}')"
