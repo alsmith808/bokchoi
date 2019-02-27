@@ -32,3 +32,8 @@ def save_recpic(form_picture):
     i.thumbnail(output_size)
     i.save(picture_path)
     return picture_fn
+
+
+category_list = ['Starter', 'Main', 'Desert', 'Meat', 'Vegetarian', 'Vegan', 'British',
+                 'French', 'Mediteranean', 'Indian', 'Middle_Eastern', 'Asian', 'African',
+                 'Mexican', 'Other']

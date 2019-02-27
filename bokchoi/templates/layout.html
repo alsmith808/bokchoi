@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Cantarell" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     {% if title %}
       <title>Bokchoi - {{ title }}</title>
@@ -19,7 +20,7 @@
 </head>
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-bokchoi fixed-top">
+      <nav class="navbar navbar-expand-md navbar-dark bg-bokchoi">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">Bokchoi</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,14 +29,16 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{{ url_for('starters') }}">Starter</a>
-                <a class="dropdown-item" href="{{ url_for('main') }}">Main Course</a>
-                <a class="dropdown-item" href="{{ url_for('desert') }}">Desert</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{{ url_for('vegan') }}">Vegan</a>
-              </div>
+              <ul class="nav">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Course</a>
+                  <div class="dropdown-menu">
+                    {% for cat in category_list %}
+                      <a class="dropdown-item" href="{{ url_for('course', course=cat) }}">{{ cat }}</a>
+                    {% endfor %}
+                  </div>
+                </li>
+              </ul>
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
@@ -52,25 +55,31 @@
         </div>
       </nav>
     </header>
-    <main role="main">
-      <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }} animated fadeOut delay-2s">
-                {{ message }}
-              </div>
-            {% endfor %}
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-xl-8">
+          {% if current_user.is_authenticated %}
+            <h5 class="welcome">Welcome {{ current_user.username }}!</h5>
           {% endif %}
-        {% endwith %}
+          {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} animated fadeOut delay-2s">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+          <div class="row content">
+            {% block cards %}{% endblock %}
+          </div>
+        </div>
       </div>
-
-
       {% block content %}{% endblock %}
     </main>
 
     <!-- Optional JavaScript -->
-    
+
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

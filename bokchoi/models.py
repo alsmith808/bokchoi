@@ -1,7 +1,6 @@
 from datetime import datetime
 from bokchoi import db, login_manager
 from flask_login import UserMixin
-from sqlalchemy.ext.associationproxy import association_proxy
 
 
 @login_manager.user_loader
@@ -74,7 +73,7 @@ class Post(db.Model):
     ingredients = db.relationship('Ingredient', secondary=post_ing,
                                   backref=db.backref('items', lazy=True))
     likers = db.relationship('User', secondary=post_likes,
-                            backref=db.backref('likers', lazy=True))
+                            backref=db.backref('likers', lazy='dynamic'))
 
 
 

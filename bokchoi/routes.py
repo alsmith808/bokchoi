@@ -6,7 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic
+from bokchoi.helpers import save_picture, save_recpic, category_list
 
 
 
@@ -15,7 +15,7 @@ from bokchoi.helpers import save_picture, save_recpic
 def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
-    return render_template('home.html', posts=posts)
+    return render_template('home.html', posts=posts, category_list=category_list)
 
 
 
@@ -126,26 +126,26 @@ def post(post_id):
     viewed.view_total = total_views
     db.session.add(viewed)
     likes = db.session.query(post_likes)
-    # likesc = likes.filter_by(liked_id==post.id).count()
-    print(likes)
-    # likes = Post.query.filter_by(vegan=True)
     db.session.commit()
     return render_template('post.html', title=post.title, post=post, total_views=total_views)
 
 
 
-# like route
+
 @app.route('/like/<int:post_id>')
 @login_required
 def like(post_id):
     post = Post.query.get_or_404(post_id)
-    # if user == current_user:
-    #     flash('You cannot like your own recipe!')
-    #     return redirect(url_for('post', title=post.title, post=post))
-    # add this post to current_users likes
-    current_user.like(post)
-    db.session.commit()
-    flash('You liked this recipe')
+    if post.user_id == current_user.id:
+        flash('You cannot like your own recipe!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif current_user.already_likes(post):
+        flash('You already like this recipe!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    else:
+        current_user.like(post)
+        db.session.commit()
+    flash('You liked this recipe', 'success')
     return redirect(url_for('post', post_id=post.id))
 
 
@@ -234,13 +234,13 @@ def user_posts(username):
 
 
 
-@app.route('/starters')
-def starters():
+@app.route("/course/<course>")
+def course(course):
     page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(course='Starter')\
+    posts = Post.query.filter_by(course=course)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title='starters')
+    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list)
 
 
 
