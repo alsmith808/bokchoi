@@ -6,7 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, category_list
+from bokchoi.helpers import save_picture, save_recpic, category_list, show_avatar
 
 
 
@@ -131,7 +131,12 @@ def post(post_id):
     db.session.add(viewed)
     likes = db.session.query(post_likes)
     db.session.commit()
-    return render_template('post.html', title=post.title, post=post, total_views=total_views)
+    image_file = show_avatar()
+    # if current_user.is_authenticated:
+    #     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    # else:
+    #     image_file = url_for('static', filename='profile_pics/'+'default.jpg')
+    return render_template('post.html', title=post.title, post=post, total_views=total_views, avatar=image_file)
 
 
 
@@ -230,11 +235,21 @@ def user_posts(username):
 
 
 
-
 @app.route("/course/<course>")
 def course(course):
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(course=course)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course, avatar=image_file)
+
+
+
+# @app.route("/course/<course>")
+# def course(course):
+#     page = request.args.get('page', 1, type=int)
+#     posts = Post.query.filter_by(course=course)\
+#         .order_by(Post.date_posted.desc())\
+#         .paginate(page=page, per_page=5)
+#     return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course)

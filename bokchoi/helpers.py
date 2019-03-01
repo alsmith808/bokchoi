@@ -34,6 +34,16 @@ def save_recpic(form_picture):
     return picture_fn
 
 
+
+def show_avatar():
+    if current_user.is_authenticated:
+        image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    else:
+        image_file = url_for('static', filename='profile_pics/'+'default.jpg')
+    return image_file
+
+
+
 category_list = ['Starter', 'Main', 'Desert', 'Meat', 'Vegetarian', 'Vegan', 'British',
                  'French', 'Mediteranean', 'Indian', 'Middle_Eastern', 'Asian', 'African',
                  'Mexican', 'Other']
