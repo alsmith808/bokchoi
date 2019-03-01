@@ -1,5 +1,7 @@
 :root {
   --bokchoi-green: #37d26b;
+  --offwhite: #fffffc;
+  --bokchoi-nav: #2c5d30;
 }
 
 
@@ -28,6 +30,14 @@ header {
   margin-bottom: 1rem;
 }
 
+.navbar {
+  box-shadow: 0px 1px 10px #5b5433;
+}
+
+.navbar-nav {
+  align-items: center;
+}
+
 .dropdown-menu {
   border-radius: 0;
   padding-top: 0;
@@ -46,12 +56,8 @@ header {
 }
 
 
-.heart {
-  color: #e7069a;
-}
-
 .main-heading {
-  color: #fffffc;
+  color: var(--offwhite);
   margin-left: 0.5rem;
   text-transform: capitalize;
 }
@@ -62,6 +68,17 @@ header {
   border-radius: 50%;
 }
 
+span.navbar-toggler-icon {
+  color: var(--offwhite);
+  border-color: rgba(255,255,255,.1);
+}
+
+.navbar-toggler:hover {
+  background: none;
+  color: #ffffff;
+}
+
+
 .user-recipe{
   color: #d9e3e9;
   font-size: 1.5rem;
@@ -69,16 +86,27 @@ header {
 }
 
 .bg-bokchoi {
-  background-color: var(--bokchoi-green);
+  background-color: var(--bokchoi-nav);
   /* opacity: 0.8; */
 }
 
+.navbar-dark .navbar-brand {
+  color: var(--bokchoi-green);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.navbar-dark .navbar-brand:hover {
+  color: var(--bokchoi-green);
+}
+
 .site-header .navbar-nav .nav-link {
-  color: #fff;
+  color: var(--bokchoi-green);
+  text-transform: uppercase;
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color:#425542;
+  color:#c2f6c2;
 }
 
 .site-header .navbar-nav .nav-link.active {
@@ -160,6 +188,12 @@ a.article-title:hover {
 .account-heading {
   font-size: 1.5rem;
 }
+
+/* Post */
+.heart {
+  color: #e7069a;
+}
+
 
 /* green form */
 
@@ -466,13 +500,21 @@ figure.effect-milo:hover p {
 @media (max-width: 576px){
   .grid figure {
     min-width: 280px;
-    /* max-width: 150px;
-    max-height: 150px;
-    width: 50%; */
+    /* max-width: 150px; */
+    /* max-height: 150px; */
+    /* width: 50%;  */
   }
 
   .welcome {
     margin-left: 1rem;
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .navbar-nav a {
+    border-bottom: 1px solid var(--offwhite);
   }
 }
 
@@ -485,8 +527,16 @@ figure.effect-milo:hover p {
     max-height: 260px;
   }
 
-  .welcome {
+  .main-heading {
     margin-left: 4rem;
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .navbar-nav a {
+    border-bottom: 1px solid var(--offwhite);
   }
 }
 
@@ -501,6 +551,11 @@ figure.effect-milo:hover p {
   .grid figure h2 {
   	font-size: 98%;
   }
+
+  .site-header .navbar-nav .nav-link {
+    font-size: 90%;
+  }
+
 }
 
 
@@ -510,5 +565,9 @@ figure.effect-milo:hover p {
     min-width: 350px;
   	max-width: 480px;
     max-height: 200px;
+  }
+
+  .site-header .navbar-nav .nav-link {
+    font-size: 110%;
   }
 }
