@@ -31,7 +31,7 @@
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
               <ul class="nav">
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Course</a>
+                  <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
                   <div class="dropdown-menu">
                     {% for cat in category_list %}
                       <a class="dropdown-item" href="{{ url_for('course', course=cat) }}">{{ cat }}</a>
@@ -46,6 +46,9 @@
                 <a class="nav-item nav-link" href="{{ url_for('new_post') }}">Add Recipe</a>
                 <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                <div class="avatar">
+                  <img src="{{ avatar }}">
+                </div>
               {% else %}
                 <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                 <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
@@ -58,9 +61,7 @@
     <main role="main" class="container">
       <div class="row">
         <div class="col-xl-8">
-          {% if current_user.is_authenticated %}
-            <h5 class="welcome">Welcome {{ current_user.username }}!</h5>
-          {% endif %}
+          <h3 class="main-heading">{{ heading }} Recipes</h3>
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}
@@ -70,9 +71,11 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
-          <div class="row content">
-            {% block cards %}{% endblock %}
-          </div>
+          <section class="recipes-section">
+            <div class="row content">
+              {% block cards %}{% endblock %}
+            </div>
+          </section>
         </div>
       </div>
       {% block content %}{% endblock %}

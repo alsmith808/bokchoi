@@ -15,7 +15,11 @@ from bokchoi.helpers import save_picture, save_recpic, category_list
 def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
-    return render_template('home.html', posts=posts, category_list=category_list)
+    if current_user.is_authenticated:
+        image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    else:
+        image_file = url_for('static', filename='profile_pics/'+'default.jpg')
+    return render_template('home.html', posts=posts, category_list=category_list, heading='All ', avatar=image_file)
 
 
 
@@ -224,13 +228,6 @@ def user_posts(username):
     return render_template('user_posts.html', posts=posts, user=user)
 
 
-# @app.route("/course/<string:course>")
-# def course(course):
-#     page = request.args.get('page', 1, type=int)
-#     posts = Post.query.filter_by(course=course)\
-#         .order_by(Post.date_posted.desc())\
-#         .paginate(page=page, per_page=5)
-#     return render_template('home.html', posts=posts, title='course')
 
 
 
@@ -240,34 +237,4 @@ def course(course):
     posts = Post.query.filter_by(course=course)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list)
-
-
-
-@app.route('/main')
-def main():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(course='Main')\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title='main courses')
-
-
-
-@app.route('/desert')
-def desert():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(course='Desert')\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title='deserts')
-
-
-
-@app.route('/vegan')
-def vegan():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(vegan=True)\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
-    return render_template('home.html', posts=posts, title='vegan')
+    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course)

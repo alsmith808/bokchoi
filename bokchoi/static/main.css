@@ -20,6 +20,8 @@ body:before {
   left: 0; right: 0;
   top: 0; bottom: 0;
   /* background: rgba(0,0,0,.4); */
+  background: rgba(188, 214, 140, 0.4);
+  z-index: -5;
 }
 
 header {
@@ -48,10 +50,16 @@ header {
   color: #e7069a;
 }
 
-.welcome {
+.main-heading {
   color: #fffffc;
   margin-left: 0.5rem;
   text-transform: capitalize;
+}
+
+.avatar img{
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
 }
 
 .user-recipe{
@@ -452,6 +460,20 @@ figure.effect-milo:hover p {
 		margin: 10px auto;
 		width: 100%;
 	}
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px){
+  .grid figure {
+    min-width: 280px;
+    /* max-width: 150px;
+    max-height: 150px;
+    width: 50%; */
+  }
+
+  .welcome {
+    margin-left: 1rem;
+  }
 }
 
 
