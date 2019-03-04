@@ -44,6 +44,18 @@ def show_avatar():
 
 
 
-category_list = ['Starter', 'Main', 'Desert', 'Meat', 'Vegetarian', 'Vegan', 'British',
-                 'French', 'Mediteranean', 'Indian', 'Middle_Eastern', 'Asian', 'African',
-                 'Mexican', 'Other']
+def update_fields(form, post):
+    fields = ['title', 'description', 'howto']
+    for item in fields:
+        form.item.data = post.item
+    return form.item.data
+    # form.title.data = post.title
+
+
+
+course_list = ['Starter', 'Main', 'Desert']
+
+category_list = ['meat', 'shellfish', 'vegetarian', 'vegan']
+
+ethnic_list = ['British', 'French', 'Mediteranean', 'Indian', 'Middle_Eastern', 'Asian', 'African',
+            'Mexican', 'Other']

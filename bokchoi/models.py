@@ -56,6 +56,8 @@ class User(db.Model, UserMixin):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    howto = db.Column(db.String(100), nullable=False)
     recipe_img = db.Column(db.String(20), nullable=False, default='recipe_default.jpg')
     ethnicity = db.Column(db.String(30), nullable=False)
     vegan = db.Column(db.Boolean, default=False)
@@ -66,8 +68,6 @@ class Post(db.Model):
     course = db.Column(db.String(30), nullable=False)
     cook_time = db.Column(db.Integer, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    description = db.Column(db.Text, nullable=False)
-    howto = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     viewed = db.relationship('Views', backref='recipe', lazy=True, uselist=False)
     ingredients = db.relationship('Ingredient', secondary=post_ing,
@@ -79,6 +79,8 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.howto}', '{self.date_posted}')"
+
+    
 
 
 

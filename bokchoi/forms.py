@@ -6,7 +6,6 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from bokchoi.models import User
 
 
-
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=5, max=30)])
@@ -70,8 +69,8 @@ class ListForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    title = StringField('Title', validators=[DataRequired()])
-    description = StringField('Description', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired(), Length(min=5, max=20)])
+    description = StringField('Description', validators=[DataRequired(), Length(min=3, max=30)])
     ethnicity = SelectField('Ethnicity', choices=[('British', 'British'), ('French', 'French'), ('Medit', 'Medit'), ('Indian', 'Indian'), ('Middle East', 'Middle East'), ('Asian', 'Asian'), ('African', 'African'), ('Mexican', 'Mexican'), ('Other', 'Other')])
     vegan = BooleanField('Vegan')
     vegetarian = BooleanField('Vegetarian')
@@ -81,6 +80,6 @@ class PostForm(FlaskForm):
     course = SelectField('Course', choices=[('Starter', 'Starter'), ('Main', 'Main'), ('Desert', 'Desert')])
     cook_time = IntegerField('Cooking Time', validators=[DataRequired()])
     ingredient = FieldList(StringField(ListForm), min_entries=4, max_entries=10)
-    howto = TextAreaField('Howto', validators=[DataRequired()])
+    howto = TextAreaField('Howto', validators=[DataRequired(), Length(min=5, max=600)])
     picture = FileField('Edit recipe image', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Post')

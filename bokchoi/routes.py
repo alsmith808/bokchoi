@@ -6,7 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, category_list, show_avatar
+from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields
 
 
 
@@ -15,11 +15,8 @@ from bokchoi.helpers import save_picture, save_recpic, category_list, show_avata
 def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
-    if current_user.is_authenticated:
-        image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
-    else:
-        image_file = url_for('static', filename='profile_pics/'+'default.jpg')
-    return render_template('home.html', posts=posts, category_list=category_list, heading='All ', avatar=image_file)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, course_list=course_list, category_list=category_list, ethnic_list=ethnic_list, heading='All ', avatar=image_file)
 
 
 
@@ -89,7 +86,8 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
-    return render_template('account.html', title='Account', image_file=image_file, form=form)
+    avatar = show_avatar()
+    return render_template('account.html', title='Account', image_file=image_file, form=form, avatar=avatar)
 
 
 
@@ -100,7 +98,6 @@ def new_post():
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
-        # view = Views(viewed=post, view_total=0)
         view = Views(recipe=post, view_total=0)
         db.session.add(post)
         db.session.commit()
@@ -132,11 +129,10 @@ def post(post_id):
     likes = db.session.query(post_likes)
     db.session.commit()
     image_file = show_avatar()
-    # if current_user.is_authenticated:
-    #     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
-    # else:
-    #     image_file = url_for('static', filename='profile_pics/'+'default.jpg')
-    return render_template('post.html', title=post.title, post=post, total_views=total_views, avatar=image_file)
+    return render_template('post.html', title=post.title, post=post,
+                           total_views=total_views, avatar=image_file,
+                           course_list=course_list, ethnic_list=ethnic_list,
+                           category_list=category_list)
 
 
 
@@ -203,8 +199,10 @@ def update_post(post_id):
         for i in range (len(form.ingredient)):
             form.ingredient[i].data = post.ingredients[i].name
     image_file = url_for('static', filename='post_pics/'+post.recipe_img)
+    avatar = show_avatar()
     return render_template('update_post.html', title='Update Recipe',
-                           form=form, legend='Update Recipe', image_file=image_file)
+                           form=form, legend='Update Recipe', image_file=image_file,
+                           avatar=avatar)
 
 
 
@@ -242,14 +240,43 @@ def course(course):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=5)
     image_file = show_avatar()
-    return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course, avatar=image_file)
+    return render_template('home.html', posts=posts, title=course, course=course,
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
 
 
 
-# @app.route("/course/<course>")
-# def course(course):
-#     page = request.args.get('page', 1, type=int)
-#     posts = Post.query.filter_by(course=course)\
-#         .order_by(Post.date_posted.desc())\
-#         .paginate(page=page, per_page=5)
-#     return render_template('home.html', posts=posts, title=course, course=course, category_list=category_list, heading=course)
+@app.route("/ethnic/<ethnic>")
+def ethnic(ethnic):
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(ethnicity=ethnic)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=ethnic, ethnic=ethnic,
+                           heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+
+
+
+@app.route("/foods/<food>")
+def food(food):
+    page = request.args.get('page', 1, type=int)
+    foodtype = food
+    kwargs = {food:True}
+    posts = Post.query.filter_by(**kwargs)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=foodtype,
+                           heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)
+
+
+
+@app.route("/foods/meat")
+def meat():
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query.filter_by(meat=True)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=5)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title='meat', ethnic=ethnic,
+                           heading='Meat', avatar=image_file, course_list=course_list, ethnic_list=ethnic_list)
