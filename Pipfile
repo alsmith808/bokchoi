@@ -14,6 +14,10 @@ pillow = "*"
 flask-mail = "*"
 flask-script = "*"
 flask-migrate = "*"
+flask-whooshalchemy = "*"
+"flask-s3" = "*"
+"boto3" = "*"
+gunicorn = "*"
 
 [dev-packages]
 
