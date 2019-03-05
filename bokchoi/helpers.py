@@ -27,7 +27,7 @@ def save_recpic(form_picture):
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
     picture_path = os.path.join(app.root_path, 'static/post_pics', picture_fn)
-    output_size = (600, 600)
+    output_size = (600, 400)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
     i.save(picture_path)
@@ -57,5 +57,5 @@ course_list = ['Starter', 'Main', 'Desert']
 
 category_list = ['meat', 'shellfish', 'vegetarian', 'vegan']
 
-ethnic_list = ['British', 'French', 'Mediteranean', 'Indian', 'Middle_Eastern', 'Asian', 'African',
+ethnic_list = ['British', 'French', 'Medit', 'Indian', 'Middle_Eastern', 'Asian', 'African',
             'Mexican', 'Other']

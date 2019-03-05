@@ -33,8 +33,14 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="{{ url_for('home') }}" role="button" aria-haspopup="true" aria-expanded="false">Recipes</a>
                   <div class="dropdown-menu">
-                    {% for cat in category_list %}
-                      <a class="dropdown-item" href="{{ url_for('course', course=cat) }}">{{ cat }}</a>
+                    {% for item in course_list %}
+                      <a class="dropdown-item" href="{{ url_for('course', course=item) }}">{{ item }}</a>
+                    {% endfor %}
+                    {% for item in category_list %}
+                      <a class="dropdown-item" href="{{ url_for('food', food=item) }}">{{ item }}</a>
+                    {% endfor %}
+                    {% for item in ethnic_list %}
+                      <a class="dropdown-item" href="{{ url_for('ethnic', ethnic=item) }}">{{ item }}</a>
                     {% endfor %}
                   </div>
                 </li>
@@ -59,25 +65,16 @@
       </nav>
     </header>
     <main role="main" class="container">
-      <div class="row">
-        <div class="col-xl-8">
-          <h3 class="main-heading">{{ heading }} Recipes</h3>
-          {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }} animated fadeOut delay-2s">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-          <section class="recipes-section">
-            <div class="row content">
-              {% block cards %}{% endblock %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div id="flash" class="alert alert-{{ category }} animated fadeOutUp delay-2s">
+              {{ message }}
             </div>
-          </section>
-        </div>
-      </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
       {% block content %}{% endblock %}
     </main>
 
@@ -88,7 +85,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type=text/javascript src="{{
-        url_for('static', filename='js/main.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

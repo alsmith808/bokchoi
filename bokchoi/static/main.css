@@ -4,7 +4,6 @@
   --bokchoi-nav: #2c5d30;
 }
 
-
 body {
   background: url('img/bg3.jpeg')no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -13,7 +12,6 @@ body {
   background-size: cover;
   color: #333333;
   font-family: 'Cantarell', sans-serif;
-  /* margin-top: 1rem; */
 }
 
 body:before {
@@ -28,6 +26,10 @@ body:before {
 
 header {
   margin-bottom: 1rem;
+}
+
+.test {
+  transition: all 3s;
 }
 
 .navbar {
@@ -406,7 +408,6 @@ h3 .badge {
 }
 
 /* Anchor will cover the whole item by default */
-/* For some effects it will show as a button */
 .grid figure figcaption > a {
 	/* z-index: 1000; */
 	text-indent: 200%;
@@ -484,7 +485,7 @@ figure.effect-milo:hover p {
 
 
 @media screen and (max-width: 50em) {
-	.content {
+	/* .content {
 		padding: 0 10px;
 		text-align: center;
 	}
@@ -492,17 +493,33 @@ figure.effect-milo:hover p {
 		display: inline-block;
 		float: none;
 		margin: 10px auto;
-		width: 100%;
+		width: 100%; */
 	}
 }
 
-/* Small devices (landscape phones, 576px and up) */
+/* Extra Small devices  */
+@media (max-width: 320px){
+  .grid figure {
+    min-width: 300px;
+  }
+
+  .welcome {
+    margin-left: 1rem;
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .navbar-nav a {
+    border-bottom: 1px solid var(--offwhite);
+  }
+}
+
+/* Small devices  */
 @media (max-width: 576px){
   .grid figure {
-    min-width: 280px;
-    /* max-width: 150px; */
-    /* max-height: 150px; */
-    /* width: 50%;  */
+    min-width: 300px;
   }
 
   .welcome {
@@ -522,9 +539,8 @@ figure.effect-milo:hover p {
 /* Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) and (max-width: 767.98px) {
   .grid figure {
-    min-width: 320px;
-    max-width: 380px;
-    max-height: 260px;
+    min-width: 240px;
+    max-height: 150px;
   }
 
   .main-heading {
@@ -541,21 +557,16 @@ figure.effect-milo:hover p {
 }
 
 
-/* Small devices (landscape phones, less than 768px) */
+/* Medium Devices */
 @media (min-width: 768px) and (max-width: 991.98px) {
   .grid figure {
     min-width: 320px;
     max-width: 380px;
   }
 
-  .grid figure h2 {
-  	font-size: 98%;
-  }
-
   .site-header .navbar-nav .nav-link {
     font-size: 90%;
   }
-
 }
 
 

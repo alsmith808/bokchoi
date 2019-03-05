@@ -87,7 +87,9 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
     avatar = show_avatar()
-    return render_template('account.html', title='Account', image_file=image_file, form=form, avatar=avatar)
+    return render_template('account.html', title='Account', image_file=image_file,
+                           form=form, avatar=avatar, course_list=course_list,
+                           category_list=category_list, ethnic_list=ethnic_list)
 
 
 
@@ -111,8 +113,10 @@ def new_post():
         flash('Your recipe has been created!', 'success')
         return redirect(url_for('home'))
     image_file = url_for('static', filename='post_pics/recipe_default.jpg')
+    avatar = show_avatar()
     return render_template('create_post.html', title='New Recipe',
-                           form=form, legend='New Recipe', image_file=image_file)
+                           form=form, legend='New Recipe', image_file=image_file, avatar=avatar,
+                           course_list=course_list, category_list=category_list, ethnic_list=ethnic_list)
 
 
 
@@ -268,15 +272,3 @@ def food(food):
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=foodtype,
                            heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)
-
-
-
-@app.route("/foods/meat")
-def meat():
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(meat=True)\
-        .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
-    image_file = show_avatar()
-    return render_template('home.html', posts=posts, title='meat', ethnic=ethnic,
-                           heading='Meat', avatar=image_file, course_list=course_list, ethnic_list=ethnic_list)
