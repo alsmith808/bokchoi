@@ -18,6 +18,8 @@ flask-whooshalchemy = "*"
 "flask-s3" = "*"
 "boto3" = "*"
 gunicorn = "*"
+"psycopg2-binary" = "*"
+"psycopg2" = "*"
 
 [dev-packages]
 
