@@ -1,4 +1,5 @@
 import os
+import psycopg2
 from flask import Flask
 from flask_s3 import FlaskS3
 from flask_sqlalchemy import SQLAlchemy
@@ -26,7 +27,8 @@ AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['FLASKS3_BUCKET_NAME'] = AWS_STORAGE_BUCKET_NAME
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Code Institute\\Project 4\\bokchoi\\bokchoi\\site.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Code Institute\\Project 4\\bokchoi\\bokchoi\\site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///C:\\Code Institute\\Project 4\\bokchoi\\bokchoi\\site.db')
 
 
 db = SQLAlchemy(app)
