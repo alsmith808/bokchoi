@@ -13,6 +13,7 @@ from bokchoi.helpers import save_picture, save_recpic, course_list, category_lis
 @app.route('/')
 @app.route('/home')
 def home():
+    """Home route """
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
     image_file = show_avatar()
@@ -28,6 +29,7 @@ def about():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    """Register route """
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
@@ -45,6 +47,7 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    """User login route """
     if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = LoginForm()
@@ -63,8 +66,9 @@ def login():
 
 @app.route("/logout")
 def logout():
-  logout_user()
-  return redirect(url_for('home'))
+    """User logout route """
+    logout_user()
+    return redirect(url_for('home'))
 
 
 
@@ -72,6 +76,7 @@ def logout():
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
+    """Account and update account route """
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -97,6 +102,7 @@ def account():
 @app.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
+    """Create new post route """
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
@@ -124,6 +130,7 @@ def new_post():
 
 @app.route("/post/<int:post_id>")
 def post(post_id):
+    """Individual post details route """
     post = Post.query.get_or_404(post_id)
     viewed = Views.query.get_or_404(post_id)
     total_views = viewed.view_total
@@ -144,6 +151,7 @@ def post(post_id):
 @app.route('/like/<int:post_id>')
 @login_required
 def like(post_id):
+    """User likes post route route function """
     post = Post.query.get_or_404(post_id)
     if post.user_id == current_user.id:
         flash('You cannot like your own recipe!', 'success')
@@ -159,11 +167,10 @@ def like(post_id):
 
 
 
-
-
 @app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
 @login_required
 def update_post(post_id):
+    """Update route for user post """
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
@@ -214,6 +221,7 @@ def update_post(post_id):
 @app.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(post_id):
+    """Delete user post route """
     post = Post.query.get_or_404(post_id)
     if post.author != current_user:
         abort(403)
@@ -227,34 +235,80 @@ def delete_post(post_id):
 
 @app.route("/user/<string:username>")
 def user_posts(username):
+    """Route to group posst by user """
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user)\
         .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
+        .paginate(page=page, per_page=4)
     return render_template('user_posts.html', posts=posts, user=user)
-
 
 
 
 @app.route("/course/<course>")
 def course(course):
+    """Starter/Main/Dessert route """
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(course=course)\
         .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
+        .paginate(page=page, per_page=4)
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=course, course=course,
                            heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
 
 
 
+@app.route("/course_ethnic/<course>/<ethnic>")
+def course_ethnic(course, ethnic):
+    """Starter/Main/Dessert group by ethnicity route """
+    page = request.args.get('page', 1, type=int)
+    filter = f'{course} - {ethnic}'
+    posts = Post.query.filter_by(course=course, ethnicity=ethnic)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=4)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=filter, course=course,
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+
+
+# working good
+@app.route("/course_foodtype/<course>/<group>")
+def course_foodtype(course, group):
+    """Starter/Main/Dessert group by ethnicity route """
+    page = request.args.get('page', 1, type=int)
+    title = f'{course} - {group}'
+    kwargs = {group:True}
+    posts = Post.query.filter_by(course=course, **kwargs)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=4)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=title, course=course,
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+
+
+# group not working
+@app.route("/foodtype_group/<group>/<ethnic>")
+def foodtype_group(group, ethnic):
+    """Meat/Fish/Veg/Vegan group by ethnicity """
+    page = request.args.get('page', 1, type=int)
+    title = f'{group} - {ethnic}'
+    kwargs = {group:True}
+    posts = Post.query.filter_by(**kwargs, ethnicity=ethnic)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=4)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=title, group=group,
+                           heading=title, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)
+
+
+
 @app.route("/ethnic/<ethnic>")
 def ethnic(ethnic):
+    """All recipes grouped by Ethnicity route """
     page = request.args.get('page', 1, type=int)
     posts = Post.query.filter_by(ethnicity=ethnic)\
         .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
+        .paginate(page=page, per_page=4)
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=ethnic, ethnic=ethnic,
                            heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
@@ -263,12 +317,13 @@ def ethnic(ethnic):
 
 @app.route("/foods/<food>")
 def food(food):
+    """All recipes grouped by meat/seafood/vegetarian/vegan route """
     page = request.args.get('page', 1, type=int)
     foodtype = food
     kwargs = {food:True}
     posts = Post.query.filter_by(**kwargs)\
         .order_by(Post.date_posted.desc())\
-        .paginate(page=page, per_page=5)
+        .paginate(page=page, per_page=4)
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=foodtype,
                            heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)

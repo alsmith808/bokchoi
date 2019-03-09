@@ -2,7 +2,47 @@
 {% block content %}
   <section class="home-section row">
     <div class="col-xl-8">
-      <h3 class="main-heading">{{ heading }} Recipes</h3>
+      <!-- Heading and filter box -->
+      <div class="row">
+        <div class="col-lg-6">
+          <h3 class="main-heading">{{ heading }} Recipes</h3>
+        </div>
+        <!-- Filter dropdown -->
+        <div class="col-lg-6 d-flex justify-content-end">
+          <div class="btn-group hide" id="course" role="group" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+              <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Course Group by
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                {% for item in category_list %}
+                  <a class="dropdown-item" href="{{ url_for('course_foodtype',
+                  course=course, group=item) }}">{{ item }}</a>
+                {% endfor %}
+                {% for item in ethnic_list %}
+                  <a class="dropdown-item" href="{{ url_for('course_ethnic',
+                  course=course, ethnic=item) }}">{{ item }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="btn-group hide" role="group" id="food" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+              <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Food Group by
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+
+                {% for item in ethnic_list %}
+                  <a class="dropdown-item" href="{{ url_for('foodtype_group',
+                  group=group, ethnic=item) }}">{{ item }}</a>
+                {% endfor %}
+
+              </div>
+            </div>
+          </div>
+        </div> <!-- End Filter dropdown -->
+      </div> <!-- Heading and filter box -->
       <div class="row content">
         {% for post in posts.items %}
           <article class="grid col-xs-12 col-sm-6 mb-2 col-md-6 col-lg-4">
@@ -19,15 +59,18 @@
       </div>
     </div>
   </section>
-  {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-    {% if page_num %}
-      {% if posts.page == page_num %}
-        <a class="btn btn-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+  <div class="paginate">
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if posts.page == page_num %}
+          <a class="btn btn-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
       {% else %}
-        <a class="btn btn-outline-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+        ...
       {% endif %}
-    {% else %}
-      ...
-    {% endif %}
-  {% endfor %}
+    {% endfor %}
+  </div>
+
 {% endblock content %}

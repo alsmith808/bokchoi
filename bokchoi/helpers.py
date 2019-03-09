@@ -57,5 +57,5 @@ course_list = ['Starter', 'Main', 'Desert']
 
 category_list = ['meat', 'shellfish', 'vegetarian', 'vegan']
 
-ethnic_list = ['British', 'French', 'Medit', 'Indian', 'Middle_Eastern', 'Asian', 'African',
+ethnic_list = ['British', 'French', 'Medit', 'Indian', 'Middle East', 'Asian', 'African',
             'Mexican', 'Other']

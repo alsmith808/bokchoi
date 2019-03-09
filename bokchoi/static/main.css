@@ -24,6 +24,11 @@ body:before {
   z-index: -5;
 }
 
+/* ensures pagination always aligns bottom */
+.home-section {
+  min-height: 76vh;
+}
+
 header {
   margin-bottom: 1rem;
 }
@@ -315,6 +320,17 @@ button:hover {
   color: #ffffff;
 }
 
+.btn-success:focus {
+  box-shadow: none;
+}
+
+.btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle {
+   color: #fff;
+   background-color: var(--bokchoi-green);
+   border-color: var(--bokchoi-green);
+}
+
+
 /* upload button */
 .upload-btn-wrapper {
   position: relative;
@@ -481,6 +497,10 @@ figure.effect-milo:hover p {
 	opacity: 1;
 	-webkit-transform: translate3d(0,0,0);
 	transform: translate3d(0,0,0);
+}
+
+.hide {
+  display: none;
 }
 
 
