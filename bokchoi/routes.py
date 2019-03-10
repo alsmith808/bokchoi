@@ -6,8 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields
-
+from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list
 
 
 @app.route('/')
@@ -17,8 +16,9 @@ def home():
     page = request.args.get('page', 1, type=int)
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
     image_file = show_avatar()
-    return render_template('home.html', posts=posts, course_list=course_list, category_list=category_list, ethnic_list=ethnic_list, heading='All ', avatar=image_file)
-
+    sub_heading = 'Latest'
+    return render_template('home.html', posts=posts, course_list=course_list,
+                           category_list=category_list, ethnic_list=ethnic_list, heading='All ', avatar=image_file, sort_list=sort_list, sub_heading=sub_heading)
 
 
 @app.route('/about')
@@ -44,7 +44,6 @@ def register():
 
 
 
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     """User login route """
@@ -63,13 +62,11 @@ def login():
 
 
 
-
 @app.route("/logout")
 def logout():
     """User logout route """
     logout_user()
     return redirect(url_for('home'))
-
 
 
 
@@ -95,7 +92,6 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file,
                            form=form, avatar=avatar, course_list=course_list,
                            category_list=category_list, ethnic_list=ethnic_list)
-
 
 
 
@@ -126,8 +122,6 @@ def new_post():
 
 
 
-
-
 @app.route("/post/<int:post_id>")
 def post(post_id):
     """Individual post details route """
@@ -144,7 +138,6 @@ def post(post_id):
                            total_views=total_views, avatar=image_file,
                            course_list=course_list, ethnic_list=ethnic_list,
                            category_list=category_list)
-
 
 
 
@@ -217,7 +210,6 @@ def update_post(post_id):
 
 
 
-
 @app.route("/post/<int:post_id>/delete", methods=['POST'])
 @login_required
 def delete_post(post_id):
@@ -229,7 +221,6 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your recipe has been deleted!', 'success')
     return redirect(url_for('home'))
-
 
 
 
@@ -262,43 +253,97 @@ def course(course):
 def course_ethnic(course, ethnic):
     """Starter/Main/Dessert group by ethnicity route """
     page = request.args.get('page', 1, type=int)
-    filter = f'{course} - {ethnic}'
+    heading = f'{course} - {ethnic}'
+    sub_heading = ethnic
     posts = Post.query.filter_by(course=course, ethnicity=ethnic)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
-    return render_template('home.html', posts=posts, title=filter, course=course,
-                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+    return render_template('home.html', posts=posts, title=heading, course=course,
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading)
 
 
-# working good
+
+@app.route("/ethnic_foodtype/<ethnic>/<food>")
+def ethnic_foodtype(ethnic, food):
+    """Ethnic group by Meat/Fish/Veg/Vegan route """
+    page = request.args.get('page', 1, type=int)
+    heading = f'{ethnic} - {food}'
+    sub_heading = food
+    kwargs = {food:True}
+    posts = Post.query.filter_by(ethnicity=ethnic, **kwargs)\
+        .order_by(Post.date_posted.desc())\
+        .paginate(page=page, per_page=4)
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=heading, course=course,
+                           heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list,
+                           sub_heading=sub_heading, food=food, ethnic=ethnic)
+
+
+
 @app.route("/course_foodtype/<course>/<group>")
 def course_foodtype(course, group):
     """Starter/Main/Dessert group by ethnicity route """
     page = request.args.get('page', 1, type=int)
-    title = f'{course} - {group}'
+    heading = f'{course} - {group}'
+    sub_heading = group
     kwargs = {group:True}
     posts = Post.query.filter_by(course=course, **kwargs)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
-    return render_template('home.html', posts=posts, title=title, course=course,
-                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+    return render_template('home.html', posts=posts, title=heading, course=course,
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading)
 
 
-# group not working
-@app.route("/foodtype_group/<group>/<ethnic>")
-def foodtype_group(group, ethnic):
+
+@app.route("/foodtype_group/<food>/<ethnic>")
+def foodtype_group(food, ethnic):
     """Meat/Fish/Veg/Vegan group by ethnicity """
     page = request.args.get('page', 1, type=int)
-    title = f'{group} - {ethnic}'
-    kwargs = {group:True}
+    title = f'{food} - {ethnic}'
+    sub_heading = ethnic
+    kwargs = {food:True}
     posts = Post.query.filter_by(**kwargs, ethnicity=ethnic)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
-    return render_template('home.html', posts=posts, title=title, group=group,
-                           heading=title, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)
+    return render_template('home.html', posts=posts, title=title, food=food,
+                           heading=food, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, sub_heading=sub_heading)
+
+
+
+@app.route('/all_recipes/<sort>')
+def all_recipes(sort):
+    """Sort all recipes route """
+    page = request.args.get('page', 1, type=int)
+    if sort == 'oldest':
+        posts = Post.query.order_by(Post.date_posted.asc()).paginate(page=page, per_page=4)
+    elif sort == 'nut free':
+        posts = Post.query.filter_by(nuts=False)\
+            .order_by(Post.date_posted.desc())\
+            .paginate(page=page, per_page=4)
+    elif sort == 'most views':
+        posts = Post.query.join(Views)\
+            .order_by(Views.view_total.desc())\
+            .paginate(page=page, per_page=4)
+    elif sort == 'least views':
+        posts = Post.query.join(Views)\
+            .order_by(Views.view_total.asc())\
+            .paginate(page=page, per_page=4)
+    elif sort == 'most likes':
+        # posts = Post.query(Entry).join(Entry.tags).count()
+        posts = Post.query.join(post_likes)\
+                             .group_by(post_likes.columns.liked_id)\
+                             .order_by(func.count(post_likes.columns.liked_id).desc())\
+                             .paginate(page=page, per_page=4)
+    else:
+        posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
+    title = f'All - {sort}'
+    sub_heading = sort
+    image_file = show_avatar()
+    return render_template('home.html', posts=posts, title=title, course_list=course_list,
+                           category_list=category_list, ethnic_list=ethnic_list, avatar=image_file, sort_list=sort_list, sort=sort, heading='All ', sub_heading=sub_heading)
 
 
 
@@ -326,4 +371,4 @@ def food(food):
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=foodtype,
-                           heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file)
+                           heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, food=food)

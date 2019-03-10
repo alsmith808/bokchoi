@@ -6,13 +6,14 @@
       <div class="row">
         <div class="col-lg-6">
           <h3 class="main-heading">{{ heading }} Recipes</h3>
+          <h5 class="sub-heading mb-0">{{ sub_heading }}</h5>
         </div>
         <!-- Filter dropdown -->
         <div class="col-lg-6 d-flex justify-content-end">
           <div class="btn-group hide" id="course" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Course Group by
+                Group by
               </button>
               <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
                 {% for item in category_list %}
@@ -29,15 +30,40 @@
           <div class="btn-group hide" role="group" id="food" aria-label="Button group with nested dropdown">
             <div class="btn-group" role="group">
               <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Food Group by
+                Group by
               </button>
               <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-
                 {% for item in ethnic_list %}
                   <a class="dropdown-item" href="{{ url_for('foodtype_group',
-                  group=group, ethnic=item) }}">{{ item }}</a>
+                  food=food, ethnic=item) }}">{{ item }}</a>
                 {% endfor %}
-
+              </div>
+            </div>
+          </div>
+          <div class="btn-group hide" role="group" id="ethnic" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+              <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Group by
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                {% for item in category_list %}
+                  <a class="dropdown-item" href="{{ url_for('ethnic_foodtype',
+                  ethnic=ethnic, food=item) }}">{{ item }}</a>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <div class="btn-group hide" role="group" id="allrecipes" aria-label="Button group with nested dropdown">
+            <div class="btn-group" role="group">
+              <button id="btnGroupDrop1" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Group by
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a class="dropdown-item" href="{{ url_for('home') }}">Newest</a>
+                {% for item in sort_list %}
+                  <a class="dropdown-item" href="{{ url_for('all_recipes',
+                  sort=item) }}">{{ item }}</a>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -65,7 +91,8 @@
         {% if posts.page == page_num %}
           <a class="btn btn-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-success mb-4" href="{{ url_for('home', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-success mb-4" href="{{ url_for('home', page=page_num) }}">
+            {{ page_num }}</a>
         {% endif %}
       {% else %}
         ...

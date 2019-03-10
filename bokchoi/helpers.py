@@ -59,3 +59,5 @@ category_list = ['meat', 'shellfish', 'vegetarian', 'vegan']
 
 ethnic_list = ['British', 'French', 'Medit', 'Indian', 'Middle East', 'Asian', 'African',
             'Mexican', 'Other']
+
+sort_list = ['oldest', 'most likes', 'least likes', 'most views', 'least views', 'nut free']

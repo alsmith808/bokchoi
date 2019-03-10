@@ -8,21 +8,18 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-""" Many to Many Assoc table between Post and Ingredient  """
-
+"""Many to Many Assoc table between Post and Ingredient """
 post_ing = db.Table('recipes',
     db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
     db.Column('ingredient_id', db.Integer, db.ForeignKey('ingredient.id'))
     )
 
 
-""" Many to Many Assoc table between User and Post  """
-
+"""Many to Many Assoc table between User and Post """
 post_likes = db.Table('post_likes',
     db.Column('liker_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('liked_id', db.Integer, db.ForeignKey('post.id'))
     )
-
 
 
 class User(db.Model, UserMixin):
@@ -78,20 +75,8 @@ class Post(db.Model):
                             backref=db.backref('likers', lazy='dynamic'))
 
 
-
     def __repr__(self):
         return f"Post('{self.title}', '{self.howto}', '{self.date_posted}')"
-
-
-
-
-class Ingredient(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30), nullable=False)
-
-    def __repr__(self):
-        return f"Ingredient('{self.name}')"
-
 
 
 
@@ -101,3 +86,12 @@ class Views(db.Model):
 
     def __repr__(self):
         return f"Total views is('{self.view_total}')"
+
+
+
+class Ingredient(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+
+    def __repr__(self):
+        return f"Ingredient('{self.name}')"

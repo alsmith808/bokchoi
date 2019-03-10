@@ -12,7 +12,6 @@ $(document).ready(function(){
     };
   });
 
-
   // window.setTimeout(function() {
   //   $(".alert")
   //   .fadeTo(500, 0)
@@ -22,46 +21,57 @@ $(document).ready(function(){
   // }, 4000);
 });
 
-
-
 // hide food group_by food button when starter, main or dessert are showing
 function showFoodFilter() {
-  const food = document.getElementById('food')
-  const course = document.getElementById('course')
-  const heading = document.querySelector('.main-heading');
+  const food    = document.getElementById('food')
+  const course  = document.getElementById('course')
+  const ethnic  = document.getElementById('ethnic')
+  const all  = document.getElementById('allrecipes')
+
+  const heading = document.querySelector('.main-heading')
 
   const courseList = ['Starter', 'Main', 'Desert']
-  // const ethnicList = ['British', 'French', 'Medit', 'Indian', 'Middle East', 'Asian', 'African',
-  //             'Mexican', 'Other', 'meat', 'shellfish', 'vegetarian', 'vegan']
-  const typeList = ['meat', 'shellfish', 'vegetarian', 'vegan']
+  const ethnicList = ['British', 'French', 'Medit', 'Indian',
+                      'Middle East', 'Asian', 'African', 'Mexican', 'Other']
+  const typeList =   ['meat', 'shellfish', 'vegetarian', 'vegan']
+  const sortList =   ['All', 'oldest', 'most likes', 'least likes', 'most views', 'least views', 'nut free']
+
 
   for (item of courseList) {
     if (heading.innerHTML.includes(item)) {
-      course.classList.remove("hide");
+      course.classList.remove("hide")
     }
   }
 
   for (item of typeList) {
     if (heading.innerHTML.includes(item)) {
-      food.classList.remove("hide");
+      food.classList.remove("hide")
     }
   }
 
-  console.log(food);
-  console.log(heading);
+  for (item of ethnicList) {
+    if (heading.innerHTML.includes(item)) {
+      ethnic.classList.remove("hide")
+    }
+  }
+
+  for (item of sortList) {
+    if (heading.innerHTML.includes(item)) {
+      all.classList.remove("hide")
+    }
+  }
 }
 
 showFoodFilter()
 
 
-
 function loadText(){
-  alert('Button clicked');
+  alert('Button clicked')
 }
 
 
 // remove flash message after fadeout
-const flashMsg = document.getElementById("flash");
+const flashMsg = document.getElementById("flash")
 
 if (flashMsg) {
   window.setTimeout(() => {

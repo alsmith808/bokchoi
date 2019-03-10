@@ -1,5 +1,6 @@
 :root {
   --bokchoi-green: #37d26b;
+  --bokchoi-lime: #84f02e;
   --offwhite: #fffffc;
   --bokchoi-nav: #2c5d30;
 }
@@ -52,6 +53,7 @@ header {
 }
 
 .dropdown-item {
+  text-transform: capitalize;
   background-color: #edf7f2;
   color: #464a4a;
 }
@@ -65,7 +67,11 @@ header {
 
 .main-heading {
   color: var(--offwhite);
-  margin-left: 0.5rem;
+  text-transform: capitalize;
+}
+
+.sub-heading {
+  color: var(--bokchoi-lime);
   text-transform: capitalize;
 }
 
@@ -300,6 +306,7 @@ input:focus + .line-box .line {
 .btn-success {
   background-color: var(--bokchoi-green);
   border-color: var(--bokchoi-green);
+  max-height: 3rem;
 }
 
 button {
