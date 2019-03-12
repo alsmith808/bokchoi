@@ -20,6 +20,8 @@ flask-whooshalchemy = "*"
 gunicorn = "*"
 "psycopg2-binary" = "*"
 "psycopg2" = "*"
+py-dictutils = "*"
+bokeh = "*"
 
 [dev-packages]
 

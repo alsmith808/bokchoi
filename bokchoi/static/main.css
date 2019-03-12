@@ -511,18 +511,12 @@ figure.effect-milo:hover p {
 }
 
 
-@media screen and (max-width: 50em) {
-	/* .content {
-		padding: 0 10px;
-		text-align: center;
-	}
-	.grid figure {
-		display: inline-block;
-		float: none;
-		margin: 10px auto;
-		width: 100%; */
-	}
+.stat {
+  color: var(--offwhite);
+  margin-top: 2.5rem;
+  /* margin-bottom: 0; */
 }
+
 
 /* Extra Small devices  */
 @media (max-width: 320px){
@@ -607,5 +601,17 @@ figure.effect-milo:hover p {
 
   .site-header .navbar-nav .nav-link {
     font-size: 110%;
+  }
+
+  .dashboard {
+    margin-top: 5rem;
+  }
+}
+
+// XLarge devices (desktops, 1200px and up)
+@media (min-width: 1200px)  {
+
+  .dashboard {
+    margin-top: 5rem;
   }
 }

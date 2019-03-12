@@ -1,12 +1,19 @@
 import os
 import secrets
+import boto3
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort, jsonify
+from sqlalchemy import func
 from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list
+from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list, count_course
+from bokeh.core.properties import value
+from bokeh.io import show, output_file
+from bokeh.models import ColumnDataSource
+from bokeh.plotting import figure, output_file, show, save
+from bokeh.embed import components
 
 
 @app.route('/')
@@ -17,8 +24,11 @@ def home():
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
     image_file = show_avatar()
     sub_heading = 'Latest'
+    # Dashboard
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, course_list=course_list,
-                           category_list=category_list, ethnic_list=ethnic_list, heading='All ', avatar=image_file, sort_list=sort_list, sub_heading=sub_heading)
+                           category_list=category_list, ethnic_list=ethnic_list, heading='All ', avatar=image_file, sort_list=sort_list, sub_heading=sub_heading, plots=plots)
 
 
 @app.route('/about')
@@ -372,3 +382,42 @@ def food(food):
     image_file = show_avatar()
     return render_template('home.html', posts=posts, title=foodtype,
                            heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, food=food)
+
+
+
+@app.route('/data/', methods=['POST', 'GET'])
+
+def make_plot():
+
+    ethnicity = ['British', 'French', 'Medit', 'Indian', 'M East', 'Asian', 'Afr',
+                'Mex', 'Other']
+    course =    ['Starter', 'Main', 'Desert']
+
+    data = {'ethnicity' : ethnicity,
+            'Starter'   : count_course('Starter'),
+            'Main'      : count_course('Main'),
+            'Desert'    : count_course('Desert')}
+
+
+    source = ColumnDataSource(data=data)
+
+    p = figure(x_range=ethnicity, y_range=(0, 10), plot_height=350, title="Recipe counts by nationality",
+               toolbar_location=None, tools="", background_fill_alpha=0.6, sizing_mode="scale_both")
+
+    p.vbar(x=dodge('ethnicity', -0.25, range=p.x_range), top='Starter', width=0.3, source=source,
+           color="#84f02e", legend=value("Starter"))
+
+    p.vbar(x=dodge('ethnicity',  0.0,  range=p.x_range), top='Main', width=0.3, source=source,
+           color="#37d26b", legend=value("Main"))
+
+    p.vbar(x=dodge('ethnicity',  0.25, range=p.x_range), top='Desert', width=0.3, source=source,
+           color="#e2f50c", legend=value("Desert"))
+
+    p.x_range.range_padding = 0.1
+    p.xgrid.grid_line_color = None
+    p.legend.location = "top_left"
+    p.legend.orientation = "horizontal"
+    p.border_fill_color = "#d7e0d6"
+
+    script, div = components(p)
+    return script, div
