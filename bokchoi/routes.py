@@ -13,6 +13,7 @@ from bokeh.core.properties import value
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure, output_file, show, save
+from bokeh.transform import dodge
 from bokeh.embed import components
 
 
