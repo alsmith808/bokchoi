@@ -8,7 +8,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list, count_course
+from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list, count_course, upload_file_to_s3
 from bokeh.core.properties import value
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource
@@ -181,7 +181,8 @@ def update_post(post_id):
     form = PostForm()
     if form.validate_on_submit():
         if form.picture.data:
-            picture_file = save_recpic(form.picture.data)
+            # picture_file = save_recpic(form.picture.data)
+            picture_file = upload_file_to_s3(form.picture.data, bokchoi)
             post.recipe_img = picture_file
         post.title = form.title.data
         post.description = form.description.data

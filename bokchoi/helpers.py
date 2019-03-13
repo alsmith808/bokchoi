@@ -6,6 +6,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
+import boto3
 
 
 
@@ -62,7 +63,7 @@ category_list = ['meat', 'shellfish', 'vegetarian', 'vegan']
 ethnic_list   = ['British', 'French', 'Medit', 'Indian', 'Middle East',
                  'Asian', 'African','Mexican', 'Other']
 
-sort_list     = ['oldest', 'most likes', 'least likes', 'most views', 'least views', 'nut free']
+sort_list     = ['oldest', 'most likes', 'most views', 'least views', 'nut free']
 
 
 
@@ -76,3 +77,42 @@ def count_course(select):
         select_total = Post.query.filter_by(course=select, ethnicity=country).count()
         course_list.append(select_total)
     return course_list
+
+
+
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY_ID = os.environ.get('AWS_SECRET_ACCESS_KEY_ID')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+S3_LOCATION = f'http://{AWS_STORAGE_BUCKET_NAME}/static/post_pics.s3.amazonaws.com/'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+
+
+s3 = boto3.client(
+   "s3",
+   aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+   aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY_ID')
+)
+
+
+def upload_file_to_s3(file, bucket_name, acl="public-read"):
+
+    try:
+
+        s3.upload_fileobj(
+            file,
+            bucket_name,
+            file.filename,
+            ExtraArgs={
+                "ACL": acl,
+                "ContentType": file.content_type
+            }
+        )
+
+    except Exception as e:
+        print("Something Happened: ", e)
+        return e
+
+    return f'{S3_LOCATION}{file.filename}'
