@@ -22,6 +22,7 @@ gunicorn = "*"
 "psycopg2" = "*"
 py-dictutils = "*"
 bokeh = "*"
+awscli = "*"
 
 [dev-packages]
 

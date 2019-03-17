@@ -36,6 +36,22 @@
         </div>
       </label>
       <label>
+        <p class="label-txt">Picture Url</p>
+        {% if form.description.errors %}
+          {{ form.picture(class="form-control form-control-lg is-invalid") }}
+          <div class="invalid-feedback">
+            {% for error in form.picture.errors %}
+              <span>{{ error }}</span>
+            {% endfor %}
+          </div>
+        {% else %}
+          {{ form.picture(class="method") }}
+        {% endif %}
+        <div class="line-box">
+          <div class="line"></div>
+        </div>
+      </label>
+      <label>
         <p class="label-txt">Ingredients</p>
         {% if form.ingredient.errors %}
           {{ form.ingredient(class="form-control form-control-lg is-invalid") }}
@@ -138,7 +154,7 @@
           {{ form.course(class="form-control form-control-lg") }}
         {% endif %}
       </label>
-    
+
       <button type="form.submit">
         Post
       </button>

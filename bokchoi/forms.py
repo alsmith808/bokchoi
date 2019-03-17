@@ -28,7 +28,6 @@ class RegistrationForm(FlaskForm):
 
 
 
-
 class LoginForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
@@ -38,13 +37,12 @@ class LoginForm(FlaskForm):
 
 
 
-
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username',
                            validators=[DataRequired(), Length(min=5, max=30)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
-    picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    picture = StringField('Update Profile Picture url', validators=[Length(min=5, max=200)])
     submit = SubmitField('Update')
 
     def validate_username(self, username):
@@ -61,10 +59,8 @@ class UpdateAccountForm(FlaskForm):
 
 
 
-
 class ListForm(FlaskForm):
     ing = StringField('Ingredient')
-
 
 
 
@@ -79,7 +75,7 @@ class PostForm(FlaskForm):
     meat = BooleanField('Meat')
     course = SelectField('Course', choices=[('Starter', 'Starter'), ('Main', 'Main'), ('Desert', 'Desert')])
     cook_time = IntegerField('Cooking Time', validators=[DataRequired()])
-    ingredient = FieldList(StringField(ListForm), min_entries=4, max_entries=10)
+    ingredient = FieldList(StringField(ListForm), min_entries=6, max_entries=10)
     howto = TextAreaField('Howto', validators=[DataRequired(), Length(min=5, max=600)])
-    picture = FileField('Edit recipe image', validators=[FileAllowed(['jpg', 'png'])])
+    picture = StringField('Image', validators=[DataRequired(), Length(min=5, max=200)], render_kw={"placeholder": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"})
     submit = SubmitField('Post')

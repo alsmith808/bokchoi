@@ -1,6 +1,5 @@
 import os
 import secrets
-import boto3
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request, abort, jsonify
 from sqlalchemy import func
@@ -8,7 +7,7 @@ from bokchoi import app, db, bcrypt
 from bokchoi.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from bokchoi.models import User, Post, Ingredient, Views, post_ing, post_likes
 from flask_login import login_user, current_user, logout_user, login_required
-from bokchoi.helpers import save_picture, save_recpic, course_list, category_list, ethnic_list, show_avatar, update_fields, sort_list, count_course, upload_file_to_s3
+from bokchoi.helpers import course_list, category_list, ethnic_list, show_avatar, sort_list, count_course
 from bokeh.core.properties import value
 from bokeh.io import show, output_file
 from bokeh.models import ColumnDataSource
@@ -87,18 +86,21 @@ def account():
     """Account and update account route """
     form = UpdateAccountForm()
     if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
+        # if form.picture.data:
+        #     picture_file = save_picture(form.picture.data)
+        #     current_user.image_file = form.picture.data
+        current_user.image_file = form.picture.data
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
         flash('Your account has been updated', 'success')
         return redirect(url_for('home'))
     elif request.method == 'GET':
+        form.picture.data = current_user.image_file
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    # image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    image_file = current_user.image_file
     avatar = show_avatar()
     return render_template('account.html', title='Account', image_file=image_file,
                            form=form, avatar=avatar, course_list=course_list,
@@ -112,7 +114,8 @@ def new_post():
     """Create new post route """
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user)
+        post = Post(title=form.title.data, description=form.description.data, ethnicity=form.ethnicity.data, vegan=form.vegan.data, vegetarian=form.vegetarian.data, nuts=form.nuts.data, shellfish=form.shellfish.data, meat=form.meat.data, course=form.course.data, cook_time=form.cook_time.data, howto=form.howto.data, author=current_user,
+                    recipe_img=form.picture.data)
         view = Views(recipe=post, view_total=0)
         db.session.add(post)
         db.session.commit()
@@ -125,11 +128,12 @@ def new_post():
         db.session.commit()
         flash('Your recipe has been created!', 'success')
         return redirect(url_for('home'))
-    image_file = url_for('static', filename='post_pics/recipe_default.jpg')
+    # image_file = url_for('static', filename='post_pics/recipe_default.jpg')
     avatar = show_avatar()
     return render_template('create_post.html', title='New Recipe',
-                           form=form, legend='New Recipe', image_file=image_file, avatar=avatar,
-                           course_list=course_list, category_list=category_list, ethnic_list=ethnic_list)
+                           form=form, legend='New Recipe', avatar=avatar,
+                           course_list=course_list, category_list=category_list,
+                           ethnic_list=ethnic_list)
 
 
 
@@ -145,10 +149,11 @@ def post(post_id):
     likes = db.session.query(post_likes)
     db.session.commit()
     image_file = show_avatar()
+    recipe_img = post.recipe_img
     return render_template('post.html', title=post.title, post=post,
                            total_views=total_views, avatar=image_file,
                            course_list=course_list, ethnic_list=ethnic_list,
-                           category_list=category_list)
+                           category_list=category_list, recipe_img=recipe_img)
 
 
 
@@ -182,8 +187,7 @@ def update_post(post_id):
     if form.validate_on_submit():
         if form.picture.data:
             # picture_file = save_recpic(form.picture.data)
-            picture_file = upload_file_to_s3(form.picture.data, bokchoi)
-            post.recipe_img = picture_file
+            post.recipe_img = form.picture.data
         post.title = form.title.data
         post.description = form.description.data
         post.howto = form.howto.data
@@ -203,6 +207,7 @@ def update_post(post_id):
     elif request.method == 'GET':
         form.title.data = post.title
         form.description.data = post.description
+        form.picture.data = post.recipe_img
         form.howto.data = post.howto
         form.ethnicity.data = post.ethnicity
         form.course.data = post.course
@@ -214,7 +219,8 @@ def update_post(post_id):
         form.cook_time.data = post.cook_time
         for i in range (len(form.ingredient)):
             form.ingredient[i].data = post.ingredients[i].name
-    image_file = url_for('static', filename='post_pics/'+post.recipe_img)
+    # image_file = url_for('static', filename='post_pics/'+post.recipe_img)
+    image_file = form.picture.data
     avatar = show_avatar()
     return render_template('update_post.html', title='Update Recipe',
                            form=form, legend='Update Recipe', image_file=image_file,

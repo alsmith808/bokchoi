@@ -26,7 +26,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(50), nullable=False, default='default.jpg')
+    image_file = db.Column(db.String(200), nullable=False, default='https://cdn.iconscout.com/icon/free/png-256/avatar-375-456327.png')
     password = db.Column(db.String(100), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     likes = db.relationship('Post', secondary=post_likes,
@@ -50,14 +50,12 @@ class User(db.Model, UserMixin):
 
 
 
-
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
     howto = db.Column(db.String(100), nullable=False)
-    recipe_img = db.Column(db.String(20), nullable=False,
-                           default='recipe_default.jpg')
+    recipe_img = db.Column(db.String(200), nullable=False, default='https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500')
     ethnicity = db.Column(db.String(30), nullable=False)
     vegan = db.Column(db.Boolean, default=False)
     vegetarian = db.Column(db.Boolean, default=False)
@@ -68,7 +66,8 @@ class Post(db.Model):
     cook_time = db.Column(db.Integer, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    viewed = db.relationship('Views', backref='recipe', lazy=True, uselist=False)
+    viewed = db.relationship('Views', backref='recipe', cascade='save-update, merge,'
+                                                'delete, delete-orphan', lazy=True, uselist=False)
     ingredients = db.relationship('Ingredient', secondary=post_ing,
                                   backref=db.backref('items', lazy=True))
     likers = db.relationship('User', secondary=post_likes,

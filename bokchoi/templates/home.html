@@ -73,7 +73,7 @@
         {% for post in posts.items %}
           <article class="grid col-xs-12 col-sm-6 mb-2 col-md-6 col-lg-4">
       			<figure class="effect-milo">
-      				<img src="{{ url_for('static', filename='post_pics/' + post.recipe_img) }}" alt="{{ post.title }}"/>
+      				<img src="{{ post.recipe_img }}" alt="{{ post.title }}"/>
       				<figcaption>
       					<h4>{{ post.title }}</h4>
       					<p>{{ post.description }}</p>
