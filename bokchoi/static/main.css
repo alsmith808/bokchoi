@@ -11,7 +11,7 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  color: #333333;
+  color: #474242;
   font-family: 'Cantarell', sans-serif;
 }
 
@@ -25,9 +25,17 @@ body:before {
   z-index: -5;
 }
 
+.bok-green {
+  color: var(--bokchoi-green)
+}
+
+h6.bok-green {
+  font-weight: bold;
+}
+
 /* ensures pagination always aligns bottom */
 .home-section {
-  min-height: 76vh;
+  /* min-height: 76vh; */
 }
 
 header {
@@ -64,7 +72,6 @@ header {
   background-color: var(--bokchoi-green);
 }
 
-
 .main-heading {
   color: var(--offwhite);
   text-transform: capitalize;
@@ -91,7 +98,6 @@ span.navbar-toggler-icon {
   color: #ffffff;
 }
 
-
 .user-recipe{
   color: #d9e3e9;
   font-size: 1.5rem;
@@ -100,7 +106,6 @@ span.navbar-toggler-icon {
 
 .bg-bokchoi {
   background-color: var(--bokchoi-nav);
-  /* opacity: 0.8; */
 }
 
 .navbar-dark .navbar-brand {
@@ -135,10 +140,6 @@ span.navbar-toggler-icon {
   opacity: .85;
 }
 
-.article-title {
-  color: #444444;
-}
-
 a.article-title:hover {
   color: #428bca;
   text-decoration: none;
@@ -162,7 +163,6 @@ a.article-title:hover {
 .lh-sp-80 {
   line-height: 80%;
 }
-
 
 .food-items {
   padding-left: 4px;
@@ -205,6 +205,10 @@ a.article-title:hover {
 /* Post */
 .heart {
   color: #e7069a;
+}
+
+.howto {
+  min-height: 10rem;
 }
 
 
@@ -509,7 +513,6 @@ figure.effect-milo:hover p {
 .hide {
   display: none;
 }
-
 
 .stat {
   color: var(--offwhite);

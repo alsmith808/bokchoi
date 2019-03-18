@@ -11,15 +11,24 @@ $(document).ready(function(){
       $(this).parent().find(".label-txt").removeClass('label-active');
     };
   });
-
-  // window.setTimeout(function() {
-  //   $(".alert")
-  //   .fadeTo(500, 0)
-  //   .slideUp(500, function(){
-  //       $(this).remove();
-  //   });
-  // }, 4000);
 });
+
+
+// hide ingredient list item if no content
+const ingredients = document.getElementById('ingredients')
+
+function hideIngredient() {
+  const liList = ingredients.getElementsByTagName('li')
+  for (let li in liList) {
+    if (liList[li].innerHTML == '') {
+      liList[li].classList.add('hide')
+    }
+
+  }
+}
+
+hideIngredient()
+
 
 // hide food group_by food button when starter, main or dessert are showing
 function showFoodFilter() {
@@ -78,6 +87,9 @@ if (flashMsg) {
     flashMsg.parentNode.removeChild(flashMsg)
   }, 3000)
 }
+
+
+
 
 
 

@@ -244,13 +244,16 @@ def delete_post(post_id):
 
 @app.route("/user/<string:username>")
 def user_posts(username):
-    """Route to group posst by user """
+    """Route to group post by user """
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
-    return render_template('user_posts.html', posts=posts, user=user)
+    avatar = show_avatar()
+    return render_template('user_posts.html', posts=posts, user=user, avatar=avatar,
+    course_list=course_list, category_list=category_list,
+    ethnic_list=ethnic_list)
 
 
 

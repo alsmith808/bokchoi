@@ -76,6 +76,6 @@ class PostForm(FlaskForm):
     course = SelectField('Course', choices=[('Starter', 'Starter'), ('Main', 'Main'), ('Desert', 'Desert')])
     cook_time = IntegerField('Cooking Time', validators=[DataRequired()])
     ingredient = FieldList(StringField(ListForm), min_entries=6, max_entries=10)
-    howto = TextAreaField('Howto', validators=[DataRequired(), Length(min=5, max=600)])
-    picture = StringField('Image', validators=[DataRequired(), Length(min=5, max=200)], render_kw={"placeholder": "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"})
+    howto = TextAreaField('Howto', validators=[DataRequired(), Length(min=5, max=800)])
+    picture = StringField('Image', validators=[DataRequired(), Length(min=5, max=200)], render_kw={"placeholder": "Medium size landscape images advised"})
     submit = SubmitField('Post')

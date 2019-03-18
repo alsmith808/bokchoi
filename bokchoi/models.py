@@ -54,7 +54,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
-    howto = db.Column(db.String(100), nullable=False)
+    howto = db.Column(db.String(800), nullable=False)
     recipe_img = db.Column(db.String(200), nullable=False, default='https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500')
     ethnicity = db.Column(db.String(30), nullable=False)
     vegan = db.Column(db.Boolean, default=False)
