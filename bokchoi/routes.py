@@ -24,7 +24,7 @@ def home():
     posts = Post.query.order_by(Post.date_posted.desc()).paginate(page=page, per_page=4)
     image_file = show_avatar()
     sub_heading = 'Latest'
-    # Dashboard
+    # Bokeh Barchart
     plots = []
     plots.append(make_plot())
     return render_template('home.html', posts=posts, course_list=course_list,
@@ -265,8 +265,11 @@ def course(course):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=course, course=course,
-                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, plots=plots)
 
 
 
@@ -280,8 +283,11 @@ def course_ethnic(course, ethnic):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=heading, course=course,
-                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading)
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading, plots=plots)
 
 
 
@@ -296,9 +302,12 @@ def ethnic_foodtype(ethnic, food):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=heading, course=course,
                            heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list,
-                           sub_heading=sub_heading, food=food, ethnic=ethnic)
+                           sub_heading=sub_heading, food=food, ethnic=ethnic, plots=plots)
 
 
 
@@ -312,9 +321,11 @@ def course_foodtype(course, group):
     posts = Post.query.filter_by(course=course, **kwargs)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
-    image_file = show_avatar()
+    image_file = show_avatar()# Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=heading, course=course,
-                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading)
+                           heading=course, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, sub_heading=sub_heading, plots=plots)
 
 
 
@@ -329,8 +340,11 @@ def foodtype_group(food, ethnic):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=title, food=food,
-                           heading=food, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, sub_heading=sub_heading)
+                           heading=food, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, sub_heading=sub_heading, plots=plots)
 
 
 
@@ -363,8 +377,11 @@ def all_recipes(sort):
     title = f'All - {sort}'
     sub_heading = sort
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=title, course_list=course_list,
-                           category_list=category_list, ethnic_list=ethnic_list, avatar=image_file, sort_list=sort_list, sort=sort, heading='All ', sub_heading=sub_heading)
+                           category_list=category_list, ethnic_list=ethnic_list, avatar=image_file, sort_list=sort_list, sort=sort, heading='All ', sub_heading=sub_heading, plots=plots)
 
 
 
@@ -376,8 +393,11 @@ def ethnic(ethnic):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=ethnic, ethnic=ethnic,
-                           heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list)
+                           heading=ethnic, avatar=image_file, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, plots=plots)
 
 
 
@@ -391,15 +411,16 @@ def food(food):
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
     image_file = show_avatar()
+    # Bokeh Barchart
+    plots = []
+    plots.append(make_plot())
     return render_template('home.html', posts=posts, title=foodtype,
-                           heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, food=food)
+                           heading=foodtype, course_list=course_list, ethnic_list=ethnic_list, category_list=category_list, avatar=image_file, food=food, plots=plots)
 
 
 
 @app.route('/data/', methods=['POST', 'GET'])
-
 def make_plot():
-
     ethnicity = ['British', 'French', 'Medit', 'Indian', 'M East', 'Asian', 'Afr',
                 'Mex', 'Other']
     course =    ['Starter', 'Main', 'Desert']
@@ -408,7 +429,6 @@ def make_plot():
             'Starter'   : count_course('Starter'),
             'Main'      : count_course('Main'),
             'Desert'    : count_course('Desert')}
-
 
     source = ColumnDataSource(data=data)
 

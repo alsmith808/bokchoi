@@ -13,6 +13,7 @@ body {
   background-size: cover;
   color: #474242;
   font-family: 'Cantarell', sans-serif;
+  padding-top: 4rem;
 }
 
 body:before {
@@ -25,6 +26,11 @@ body:before {
   z-index: -5;
 }
 
+.dashboard {
+  min-height: 20rem;
+  margin-bottom: 2rem;
+}
+
 .bok-green {
   color: var(--bokchoi-green)
 }
@@ -35,7 +41,7 @@ h6.bok-green {
 
 /* ensures pagination always aligns bottom */
 .home-section {
-  /* min-height: 76vh; */
+  min-height: 76vh;
 }
 
 header {
@@ -124,7 +130,7 @@ span.navbar-toggler-icon {
 }
 
 .site-header .navbar-nav .nav-link:hover {
-  color:#c2f6c2;
+  color:#dce0dc;
 }
 
 .site-header .navbar-nav .nav-link.active {
@@ -380,11 +386,7 @@ h3 .badge {
 
 .grid {
 	position: relative;
-	/* margin: 0 auto; */
-	/* padding: 1em 0 4em; */
 	max-width: 1000px;
-	/* list-style: none; */
-	/* text-align: center; */
 }
 
 /* Common style */
@@ -519,6 +521,68 @@ figure.effect-milo:hover p {
   margin-top: 2.5rem;
   /* margin-bottom: 0; */
 }
+
+
+/* Footer */
+
+#footer {
+    background: var(--bokchoi-green);
+}
+
+#footer a {
+  color: #ffffff;
+  text-decoration: none !important;
+  background-color: transparent;
+  -webkit-text-decoration-skip: objects;
+}
+
+#footer ul.social li{
+	padding: 3px 0;
+}
+
+#footer ul.social li a i {
+  margin-right: 5px;
+	font-size:25px;
+	-webkit-transition: .5s all ease;
+	-moz-transition: .5s all ease;
+	transition: .5s all ease;
+}
+
+#footer ul.social li:hover a i {
+	font-size:30px;
+	margin-top:-10px;
+}
+
+#footer ul.social li a,
+#footer ul.quick-links li a{
+	color:#ffffff;
+}
+
+#footer ul.social li a:hover{
+	color:#eeeeee;
+}
+
+#footer ul.quick-links li{
+	padding: 3px 0;
+	-webkit-transition: .5s all ease;
+	-moz-transition: .5s all ease;
+	transition: .5s all ease;
+}
+
+#footer ul.quick-links li:hover{
+	padding: 3px 0;
+	margin-left:5px;
+	font-weight:700;
+}
+
+#footer ul.quick-links li a i{
+	margin-right: 5px;
+}
+
+#footer ul.quick-links li:hover a i {
+    font-weight: 700;
+}
+
 
 
 /* Extra Small devices  */
