@@ -244,16 +244,16 @@ def delete_post(post_id):
 
 @app.route("/user/<string:username>")
 def user_posts(username):
-    """Route to group post by user """
+    """Route to group posts by user """
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user)\
         .order_by(Post.date_posted.desc())\
         .paginate(page=page, per_page=4)
-    avatar = show_avatar()
+    avatar = user.image_file
     return render_template('user_posts.html', posts=posts, user=user, avatar=avatar,
-    course_list=course_list, category_list=category_list,
-    ethnic_list=ethnic_list)
+                           course_list=course_list, category_list=category_list,
+                           ethnic_list=ethnic_list)
 
 
 
@@ -367,7 +367,6 @@ def all_recipes(sort):
             .order_by(Views.view_total.asc())\
             .paginate(page=page, per_page=4)
     elif sort == 'most likes':
-        # posts = Post.query(Entry).join(Entry.tags).count()
         posts = Post.query.join(post_likes)\
                              .group_by(post_likes.columns.liked_id)\
                              .order_by(func.count(post_likes.columns.liked_id).desc())\
@@ -421,6 +420,7 @@ def food(food):
 
 @app.route('/data/', methods=['POST', 'GET'])
 def make_plot():
+    """Bokeh bar chart pulling data from database, grouped by ethnicity and course """
     ethnicity = ['British', 'French', 'Medit', 'Indian', 'M East', 'Asian', 'Afr',
                 'Mex', 'Other']
     course =    ['Starter', 'Main', 'Desert']
