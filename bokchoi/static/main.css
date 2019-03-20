@@ -5,6 +5,8 @@
   --bokchoi-nav: #2c5d30;
 }
 
+
+
 body {
   background: url('img/bg3.jpeg')no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -630,6 +632,13 @@ figure.effect-milo:hover p {
 
   .dropdown-menu.show {
     transform: translate3d(-88px, 38px, 0px);
+  }
+
+  .dropdown .dropdown-menu {
+    height: 200px;
+    overflow: hidden;
+    overflow-y: scroll;
+    transform: translate3d(0px, 38px, 0px);
   }
 }
 
