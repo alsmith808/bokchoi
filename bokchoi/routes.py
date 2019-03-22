@@ -368,7 +368,7 @@ def all_recipes(sort):
             .paginate(page=page, per_page=4)
     elif sort == 'most likes':
         posts = Post.query.join(post_likes)\
-                             .group_by(post_likes.columns.liked_id)\
+                             .group_by(Post.id, post_likes.columns.liked_id)\
                              .order_by(func.count(post_likes.columns.liked_id).desc())\
                              .paginate(page=page, per_page=4)
     else:
