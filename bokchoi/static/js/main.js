@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-  console.log('im working');
-
   $('input').focus(function(){
     $(this).parent().find(".label-txt").addClass('label-active');
   });

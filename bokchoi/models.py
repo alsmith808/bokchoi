@@ -23,6 +23,7 @@ post_likes = db.Table('post_likes',
 
 
 class User(db.Model, UserMixin):
+    """User model """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -42,8 +43,6 @@ class User(db.Model, UserMixin):
 
     def already_likes(self, post):
         return post in self.likes
-        # return self.likes.filter(
-        #     post_likes.c.liked_id == post.id).count() > 0
 
     def __repr__(self):
         return f"User('{self.username}', '{self.email}', '{self.image_file}')"
@@ -51,6 +50,7 @@ class User(db.Model, UserMixin):
 
 
 class Post(db.Model):
+    """Post model """
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30), nullable=False)
     description = db.Column(db.Text, nullable=False)
@@ -69,10 +69,12 @@ class Post(db.Model):
     viewed = db.relationship('Views', backref='recipe', cascade='save-update, merge,'
                                                 'delete, delete-orphan', lazy=True, uselist=False)
     ingredients = db.relationship('Ingredient', secondary=post_ing,
-                                  backref=db.backref('items', lazy=True))
+                                  backref=db.backref('items', lazy='dynamic'))
     likers = db.relationship('User', secondary=post_likes,
                             backref=db.backref('likers', lazy='dynamic'))
 
+    def in_recipe(self, ingredient):
+        return ingredient in self.ingredients
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.howto}', '{self.date_posted}')"
@@ -80,6 +82,7 @@ class Post(db.Model):
 
 
 class Views(db.Model):
+    """Post Views model """
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
     view_total = db.Column(db.Integer)
 
@@ -89,6 +92,7 @@ class Views(db.Model):
 
 
 class Ingredient(db.Model):
+    """Ingredient model """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
 
